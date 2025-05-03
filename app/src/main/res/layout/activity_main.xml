@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/main_background"
+    android:background="?attr/colorSecondary"
     tools:context=".MainActivity">
 
     <LinearLayout
@@ -16,18 +16,10 @@
 
         <TextView
             android:id="@+id/title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            style="@style/activity_title"
             android:layout_marginStart="@dimen/margin_16dp"
-            android:layout_gravity="center_vertical"
             android:text="@string/app_name"
-            android:textSize="@dimen/text_size"
-            android:textColor="@color/white"
-            android:fontFamily="@font/ys_display_regular"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:textColor="?attr/colorOnPrimary" />
 
     </LinearLayout>
 
@@ -40,37 +32,21 @@
 
         <FrameLayout
             android:id="@+id/search_button"
-            android:layout_width="match_parent"
-            android:layout_marginHorizontal="@dimen/margin_16dp"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:layout_gravity="center"
-            android:layout_marginTop="@dimen/margin_16dp"
-            android:background="@drawable/rounded_layout">
+            style="@style/layout_button">
 
             <LinearLayout
                 android:id="@+id/search_info"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal|center_vertical"
-                android:orientation="horizontal">
+                style="@style/button_title">
 
                 <ImageView
                     android:id="@+id/icon_search"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
+                    style="@style/button_icon"
                     android:src="@drawable/icon_search"/>
 
                 <TextView
                     android:id="@+id/text_search"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/margin_8dp"
-                    android:text="@string/search"
-                    android:textColor="@color/text_color"
-                    android:fontFamily="@font/ys_display_regular"
-                    android:textSize="@dimen/text_size"/>
+                    style="@style/button_text"
+                    android:text="@string/search" />
 
             </LinearLayout>
 
@@ -78,36 +54,21 @@
 
         <FrameLayout
             android:id="@+id/media_library_button"
-            android:layout_width="match_parent"
-            android:layout_marginHorizontal="@dimen/margin_16dp"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:layout_gravity="center"
-            android:layout_marginTop="@dimen/margin_16dp"
-            android:background="@drawable/rounded_layout">
+            style="@style/layout_button">
 
             <LinearLayout
                 android:id="@+id/media_library_info"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal|center_vertical">
+                style="@style/button_title">
 
                 <ImageView
                     android:id="@+id/icon_media_library"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
+                    style="@style/button_icon"
                     android:src="@drawable/icon_media_library"/>
 
                 <TextView
                     android:id="@+id/text_media_library"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/margin_8dp"
-                    android:text="@string/media_library"
-                    android:textColor="@color/text_color"
-                    android:fontFamily="@font/ys_display_regular"
-                    android:textSize="@dimen/text_size"/>
+                    style="@style/button_text"
+                    android:text="@string/media_library" />
 
             </LinearLayout>
 
@@ -115,38 +76,22 @@
 
         <FrameLayout
             android:id="@+id/settins_button"
-            android:layout_width="match_parent"
-            android:layout_marginHorizontal="@dimen/margin_16dp"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:layout_gravity="center"
-            android:layout_marginTop="@dimen/margin_16dp"
-            android:layout_marginBottom="28dp"
-            android:background="@drawable/rounded_layout">
+            style="@style/layout_button"
+            android:layout_marginBottom="@dimen/margin_16dp">
 
             <LinearLayout
                 android:id="@+id/settigs_info"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal|center_vertical"
-                android:orientation="horizontal">
+                style="@style/button_title">
 
                 <ImageView
                     android:id="@+id/icon_settings"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
+                    style="@style/button_icon"
                     android:src="@drawable/icon_settings"/>
 
                 <TextView
                     android:id="@+id/text_settings"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/margin_8dp"
-                    android:text="@string/settings"
-                    android:textColor="@color/text_color"
-                    android:fontFamily="@font/ys_display_regular"
-                    android:textSize="@dimen/text_size"/>
+                    style="@style/button_text"
+                    android:text="@string/settings" />
 
             </LinearLayout>
 
