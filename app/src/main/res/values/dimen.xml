@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="text_size">24sp</dimen>
-    <dimen name="settings_text_size">16dp</dimen>
+    <dimen name="text_size_24sp">24sp</dimen>
+    <dimen name="text_size_16sp">16sp</dimen>
 
     <dimen name="dimen_8dp">8dp</dimen>
     <dimen name="dimen_12dp">12dp</dimen>
