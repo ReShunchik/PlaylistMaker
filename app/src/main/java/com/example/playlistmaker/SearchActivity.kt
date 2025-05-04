@@ -6,6 +6,7 @@ import android.text.TextWatcher
 import android.view.View
 import android.widget.EditText
 import android.widget.ImageButton
+import android.widget.ImageView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -20,6 +21,7 @@ class SearchActivity : AppCompatActivity() {
         setContentView(R.layout.activity_search)
         val clearButton = findViewById<ImageButton>(R.id.clear_button)
         val searchField = findViewById<EditText>(R.id.search_input)
+        val buttonBack = findViewById<ImageView>(R.id.button_back)
 
         if(savedInstanceState != null){
             searchText = savedInstanceState.getString(SEARCH_TEXT, SEARCH_DEF)
@@ -28,6 +30,10 @@ class SearchActivity : AppCompatActivity() {
 
         clearButton.setOnClickListener{
             searchField.setText("")
+        }
+
+        buttonBack.setOnClickListener{
+            finish()
         }
 
         val searchTextWatcher = object : TextWatcher{

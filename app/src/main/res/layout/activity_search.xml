@@ -8,11 +8,28 @@
     android:orientation="vertical"
     tools:context=".SearchActivity">
 
-    <TextView
+    <FrameLayout
         android:id="@+id/header"
-        style="@style/activity_title"
-        android:text="@string/search"
-        android:layout_gravity="top"/>
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/button_back"
+            android:layout_width="48dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_margin="4dp"
+            android:padding="16dp"
+            android:src="@drawable/icon_back"
+            app:tint="?attr/colorOnPrimary"/>
+
+        <TextView
+            android:id="@+id/text_header"
+            style="@style/activity_title"
+            android:layout_marginLeft="56dp"
+            android:text="@string/search" />
+
+    </FrameLayout>
 
     <LinearLayout
         android:id="@+id/search"
