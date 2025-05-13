@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?attr/bgColor"
+    android:background="?attr/colorPrimary"
     android:orientation="vertical"
     tools:context=".SettingsActivity">
 
@@ -28,7 +28,7 @@
                 android:layout_margin="4dp"
                 android:padding="16dp"
                 android:src="@drawable/icon_back"
-                app:tint="?attr/colorPrimary"/>
+                app:tint="?attr/colorOnPrimary"/>
 
             <TextView
                 android:id="@+id/text_header"
@@ -45,7 +45,7 @@
             android:paddingHorizontal="@dimen/dimen_16dp"
             android:paddingVertical="@dimen/dimen_20dp"
             android:text="@string/dark_theme"
-            android:textColor="?attr/colorPrimary"
+            android:textColor="?attr/colorOnPrimary"
             android:textSize="@dimen/text_size_16sp"
             android:fontFamily="@font/ys_display_regular"/>
 
