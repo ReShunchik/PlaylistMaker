@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="?attr/colorSecondary"
+    android:background="?attr/bgMainColor"
     tools:context=".MainActivity">
 
     <LinearLayout
@@ -19,7 +18,7 @@
             style="@style/activity_title"
             android:layout_marginStart="@dimen/dimen_16dp"
             android:text="@string/app_name"
-            android:textColor="?attr/colorOnPrimary" />
+            android:textColor="@color/white" />
 
     </LinearLayout>
 
