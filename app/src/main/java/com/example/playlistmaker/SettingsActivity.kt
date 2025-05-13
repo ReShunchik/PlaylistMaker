@@ -17,6 +17,8 @@ class SettingsActivity : AppCompatActivity() {
         val buttonAgreement = findViewById<TextView>(R.id.user_agreement)
 
         buttonBack.setOnClickListener{
+            //val intent = Intent(this@SettingsActivity, MainActivity::class.java)
+            //startActivity(intent)
             finish()
         }
 
