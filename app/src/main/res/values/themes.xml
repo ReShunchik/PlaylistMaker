@@ -1,12 +1,13 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="Base.Theme.PlaylistMaker" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <item name="colorPrimary">@color/white</item>
-        <item name="colorSecondary">@color/blue</item>
-        <item name="colorOnPrimary">@color/black</item>
-        <item name="colorOnSecondary">@color/black</item>
-        <item name="colorPrimaryVariant">@color/grey_1</item>
-        <item name="colorSecondaryVariant">@color/grey_2</item>
+        <item name="colorPrimary">@color/black</item>
+        <item name="searchFieldColor">@color/grey_1</item>
+        <item name="iconColor">@color/grey_2</item>
+        <item name="bgMainColor">@color/blue</item>
+        <item name="bgColor">@color/white</item>
+        <item name="trackNameColor">@color/black</item>
+        <item name="trackArtAndTimeColor">@color/grey_2</item>
     </style>
 
     <style name="Theme.PlaylistMaker" parent="Base.Theme.PlaylistMaker" />
