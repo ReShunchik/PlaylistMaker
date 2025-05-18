@@ -27,7 +27,7 @@ class SearchActivity : AppCompatActivity() {
         val buttonBack = findViewById<ImageView>(R.id.button_back)
         val trackList = findViewById<RecyclerView>(R.id.track_list)
         trackList.layoutManager = LinearLayoutManager(this)
-        trackList.adapter = TrackAdapter(testTrackList(),this)
+        trackList.adapter = TrackAdapter(testTrackList())
 
         if(savedInstanceState != null){
             searchText = savedInstanceState.getString(SEARCH_TEXT, SEARCH_DEF)
