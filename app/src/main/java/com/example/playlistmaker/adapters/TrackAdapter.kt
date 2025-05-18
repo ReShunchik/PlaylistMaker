@@ -1,6 +1,6 @@
 package com.example.playlistmaker.adapters
 
-import android.content.Context
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,8 +12,7 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
 import com.example.playlistmaker.Track
 
-class TrackAdapter(private val tracks: List<Track>,
-                   val context: Context): RecyclerView.Adapter<TrackAdapter.TrackViewHolder>() {
+class TrackAdapter(private val tracks: List<Track>): RecyclerView.Adapter<TrackAdapter.TrackViewHolder>() {
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TrackViewHolder {
@@ -26,32 +25,39 @@ class TrackAdapter(private val tracks: List<Track>,
     }
 
     override fun onBindViewHolder(holder: TrackViewHolder, position: Int) {
-        holder.bind(tracks[position], context)
+        holder.bind(tracks[position])
     }
 
-    class TrackViewHolder(parentView: View): RecyclerView.ViewHolder(parentView){
+    class TrackViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
         private val trackName: TextView
         private val trackArtist: TextView
         private val trackTime: TextView
         private val trackImage: ImageView
 
         init {
-            trackName = parentView.findViewById(R.id.track_name)
-            trackArtist = parentView.findViewById(R.id.track_artist)
-            trackTime = parentView.findViewById(R.id.track_time)
-            trackImage = parentView.findViewById(R.id.track_image)
+            trackName = itemView.findViewById(R.id.track_name)
+            trackArtist = itemView.findViewById(R.id.track_artist)
+            trackTime = itemView.findViewById(R.id.track_time)
+            trackImage = itemView.findViewById(R.id.track_image)
         }
 
-        fun bind(track: Track, context: Context){
+        fun bind(track: Track){
             trackName.text = track.trackName
             trackArtist.text = track.artistName
             trackTime.text = track.trackTime
-            Glide.with(context)
+            Glide.with(itemView.context)
                 .load(track.artworkUrl100)
                 .placeholder(R.drawable.track_placeholder)
                 .centerCrop()
-                .transform(RoundedCorners(10))
+                .transform(RoundedCorners(dpToPx(2f)))
                 .into(trackImage)
+        }
+
+        fun dpToPx(dp: Float): Int {
+            return TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_DIP,
+                dp,
+                itemView.context.resources.displayMetrics).toInt()
         }
     }
 }
