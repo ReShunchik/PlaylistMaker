@@ -10,14 +10,29 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
-import com.example.playlistmaker.Track
+import com.example.playlistmaker.datas.TracksResponse
+import java.util.Locale
+import java.text.SimpleDateFormat
 
-class TrackAdapter(private val tracks: List<Track>): RecyclerView.Adapter<TrackAdapter.TrackViewHolder>() {
 
+class TrackAdapter(): RecyclerView.Adapter<TrackAdapter.TrackViewHolder>() {
+
+    private val tracks = ArrayList<TracksResponse.Track>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TrackViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.track_view, parent, false)
         return TrackViewHolder(view)
+    }
+
+    fun updateTracks(newTracks: List<TracksResponse.Track>){
+        tracks.clear()
+        tracks.addAll(newTracks)
+        notifyDataSetChanged()
+    }
+
+    fun clearTracks(){
+        tracks.clear()
+        notifyDataSetChanged()
     }
 
     override fun getItemCount(): Int {
@@ -41,10 +56,10 @@ class TrackAdapter(private val tracks: List<Track>): RecyclerView.Adapter<TrackA
             trackImage = itemView.findViewById(R.id.track_image)
         }
 
-        fun bind(track: Track){
+        fun bind(track: TracksResponse.Track){
             trackName.text = track.trackName
             trackArtist.text = track.artistName
-            trackTime.text = track.trackTime
+            trackTime.text = SimpleDateFormat("mm:ss", Locale.getDefault()).format(track.trackTime)
             Glide.with(itemView.context)
                 .load(track.artworkUrl100)
                 .placeholder(R.drawable.track_placeholder)

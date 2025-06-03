@@ -60,4 +60,22 @@
         <item name="android:textColor">?attr/trackArtAndTimeColor</item>
     </style>
 
+    <style name="error_text">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:gravity">center</item>
+        <item name="android:fontFamily">@font/ys_display_medium</item>
+        <item name="android:textSize">@dimen/text_size_20sp</item>
+        <item name="android:textColor">?attr/colorPrimary</item>
+        <item name="android:layout_marginTop">@dimen/dimen_16dp</item>
+    </style>
+
+    <style name="error_layout">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:visibility">gone</item>
+        <item name="android:orientation">vertical</item>
+        <item name="android:layout_marginTop">@dimen/dimen_100dp</item>
+    </style>
+
 </resources>
