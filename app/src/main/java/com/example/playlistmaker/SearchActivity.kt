@@ -110,10 +110,11 @@ class SearchActivity : AppCompatActivity() {
                     call: Call<TracksResponse>,
                     response: Response<TracksResponse>
                 ) {
-                    if(response.code() == 200){
-                        if (response.body()?.resultCount != 0) {
+                    if(response.isSuccessful){
+                        val results = response.body()?.results as List<TracksResponse.Track>
+                        if (results.isNullOrEmpty()) {
                             trackList.visibility = View.VISIBLE
-                            trackAdapter.updateTracks(response.body()?.results!!)
+                            trackAdapter.updateTracks(results)
                         } else{
                             noSearchLayout.visibility = View.VISIBLE
                         }
