@@ -3,7 +3,6 @@ package com.example.playlistmaker
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
@@ -14,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.adapters.TrackAdapter
+import com.example.playlistmaker.datas.Track
 import com.example.playlistmaker.datas.TracksResponse
 import com.google.android.material.button.MaterialButton
 import retrofit2.Call
@@ -28,16 +28,23 @@ class SearchActivity : AppCompatActivity() {
 
     private var searchText = ""
     private lateinit var trackList: RecyclerView
+    private lateinit var trackHistoryList: RecyclerView
     private lateinit var noSearchLayout: LinearLayout
     private lateinit var connectionErrorLayout: LinearLayout
+    private lateinit var searchHistory: LinearLayout
     private lateinit var trackAdapter: TrackAdapter
 
-    private val retrofit = Retrofit.Builder()
-        .baseUrl("https://itunes.apple.com/")
-        .addConverterFactory(GsonConverterFactory.create())
-        .build()
+    private val retrofit: Retrofit
 
-    private val iTunesService = retrofit.create(ITunesAPI::class.java)
+    private val iTunesService: ITunesAPI
+
+    init {
+        retrofit = Retrofit.Builder()
+            .baseUrl("https://itunes.apple.com/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+        iTunesService = retrofit.create(ITunesAPI::class.java)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,6 +54,7 @@ class SearchActivity : AppCompatActivity() {
         val clearButton = findViewById<ImageButton>(R.id.clear_button)
         val buttonBack = findViewById<ImageView>(R.id.button_back)
         val updateButton = findViewById<MaterialButton>(R.id.update_request)
+        searchHistory = findViewById(R.id.search_history)
         trackList.layoutManager = LinearLayoutManager(this)
         trackList.adapter = trackAdapter
 
@@ -58,6 +66,7 @@ class SearchActivity : AppCompatActivity() {
         clearButton.setOnClickListener{
             searchField.setText("")
             trackAdapter.clearTracks()
+            showSearchHistory()
         }
 
         buttonBack.setOnClickListener{
@@ -70,6 +79,11 @@ class SearchActivity : AppCompatActivity() {
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 clearButton.visibility = clearButtonVisibility(s)
+                if (searchField.hasFocus() && s?.isEmpty() == true) {
+                    showSearchHistory()
+                } else {
+                    searchHistory.visibility = View.GONE
+                }
             }
 
             override fun afterTextChanged(s: Editable?) {
@@ -88,22 +102,49 @@ class SearchActivity : AppCompatActivity() {
             }
         }
 
+        searchField.setOnFocusChangeListener{view, hasFocus ->
+            if(hasFocus && searchField.text.isEmpty()){
+                showSearchHistory()
+            }
+        }
+
         updateButton.setOnClickListener{
             findTracks(searchField.text.toString())
         }
     }
 
     private fun initViews(){
-        trackList = findViewById<RecyclerView>(R.id.track_list)
-        noSearchLayout = findViewById<LinearLayout>(R.id.no_search_result)
-        connectionErrorLayout = findViewById<LinearLayout>(R.id.connection_error)
-        trackAdapter = TrackAdapter()
+        trackList = findViewById(R.id.track_list)
+        noSearchLayout = findViewById(R.id.no_search_result)
+        connectionErrorLayout = findViewById(R.id.connection_error)
+        trackAdapter = TrackAdapter(applicationContext as App)
+        initHistory()
+    }
+
+    private fun showSearchHistory(){
+        trackAdapter.updateHistoryTracks()
+        if(trackAdapter.itemCount == 0){
+            searchHistory.visibility = View.GONE
+        } else {
+            allLayoutGone()
+            searchHistory.visibility = View.VISIBLE
+        }
+    }
+
+    private fun initHistory(){
+        trackHistoryList = findViewById(R.id.history_track_list)
+        trackHistoryList.layoutManager = LinearLayoutManager(this)
+        trackHistoryList.adapter = trackAdapter
+        val clearHistory = findViewById<MaterialButton>(R.id.clear_history)
+        clearHistory.setOnClickListener{
+            trackAdapter.clearHistory()
+            searchHistory.visibility = View.GONE
+        }
     }
 
     private fun findTracks(searchText: String){
         trackList.visibility = View.GONE
-        noSearchLayout.visibility = View.GONE
-        connectionErrorLayout.visibility = View.GONE
+        allLayoutGone()
         iTunesService.search(searchText)
             .enqueue(object : Callback<TracksResponse>{
                 override fun onResponse(
@@ -111,8 +152,8 @@ class SearchActivity : AppCompatActivity() {
                     response: Response<TracksResponse>
                 ) {
                     if(response.isSuccessful){
-                        val results = response.body()?.results as List<TracksResponse.Track>
-                        if (results.isNullOrEmpty()) {
+                        val results = response.body()?.results as List<Track>
+                        if (!results.isNullOrEmpty()) {
                             trackList.visibility = View.VISIBLE
                             trackAdapter.updateTracks(results)
                         } else{
@@ -132,6 +173,13 @@ class SearchActivity : AppCompatActivity() {
         } else {
             View.VISIBLE
         }
+    }
+
+    private fun allLayoutGone(){
+        trackList.visibility = View.GONE
+        noSearchLayout.visibility = View.GONE
+        connectionErrorLayout.visibility = View.GONE
+        searchHistory.visibility = View.GONE
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

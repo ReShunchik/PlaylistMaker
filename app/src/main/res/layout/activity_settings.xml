@@ -39,7 +39,7 @@
         </FrameLayout>
 
         <androidx.appcompat.widget.SwitchCompat
-            android:id="@+id/theme"
+            android:id="@+id/themes_swither"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingHorizontal="@dimen/dimen_16dp"
