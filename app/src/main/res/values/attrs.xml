@@ -6,4 +6,6 @@
     <attr name="iconColor" format="color"/>
     <attr name="trackNameColor" format="color"/>
     <attr name="trackArtAndTimeColor" format="color"/>
+    <attr name="controlerPrimaryColor" format="color"/>
+    <attr name="controlerSecondaryColor" format="color"/>
 </resources>

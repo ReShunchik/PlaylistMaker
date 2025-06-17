@@ -1,5 +1,6 @@
 package com.example.playlistmaker.adapters
 
+import android.util.Log
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
@@ -9,30 +10,42 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.example.playlistmaker.App
 import com.example.playlistmaker.R
-import com.example.playlistmaker.datas.TracksResponse
+import com.example.playlistmaker.datas.Track
 import java.util.Locale
 import java.text.SimpleDateFormat
 
 
-class TrackAdapter(): RecyclerView.Adapter<TrackAdapter.TrackViewHolder>() {
+class TrackAdapter(val app: App): RecyclerView.Adapter<TrackAdapter.TrackViewHolder>() {
 
-    private val tracks = ArrayList<TracksResponse.Track>()
+    private val tracks = ArrayList<Track>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TrackViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.track_view, parent, false)
-        return TrackViewHolder(view)
+        return TrackViewHolder(view, app)
     }
 
-    fun updateTracks(newTracks: List<TracksResponse.Track>){
+    fun updateTracks(newTracks: List<Track>){
         tracks.clear()
         tracks.addAll(newTracks)
+        notifyDataSetChanged()
+    }
+
+    fun updateHistoryTracks(){
+        tracks.clear()
+        tracks.addAll(app.readTracks())
         notifyDataSetChanged()
     }
 
     fun clearTracks(){
         tracks.clear()
         notifyDataSetChanged()
+    }
+
+    fun clearHistory(){
+        app.clearHistory()
+        clearTracks()
     }
 
     override fun getItemCount(): Int {
@@ -43,7 +56,7 @@ class TrackAdapter(): RecyclerView.Adapter<TrackAdapter.TrackViewHolder>() {
         holder.bind(tracks[position])
     }
 
-    class TrackViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
+    class TrackViewHolder(val itemView: View, val app: App): RecyclerView.ViewHolder(itemView){
         private val trackName: TextView
         private val trackArtist: TextView
         private val trackTime: TextView
@@ -56,7 +69,7 @@ class TrackAdapter(): RecyclerView.Adapter<TrackAdapter.TrackViewHolder>() {
             trackImage = itemView.findViewById(R.id.track_image)
         }
 
-        fun bind(track: TracksResponse.Track){
+        fun bind(track: Track){
             trackName.text = track.trackName
             trackArtist.text = track.artistName
             trackTime.text = SimpleDateFormat("mm:ss", Locale.getDefault()).format(track.trackTime)
@@ -66,6 +79,12 @@ class TrackAdapter(): RecyclerView.Adapter<TrackAdapter.TrackViewHolder>() {
                 .centerCrop()
                 .transform(RoundedCorners(dpToPx(2f)))
                 .into(trackImage)
+
+            itemView.setOnClickListener{
+                Log.d("History","start")
+                app.freshHistory(track)
+                Log.d("History","end")
+            }
         }
 
         fun dpToPx(dp: Float): Int {

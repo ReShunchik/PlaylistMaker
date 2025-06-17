@@ -1,4 +1,4 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.Activities
 
 import android.content.Intent
 import android.net.Uri
@@ -6,6 +6,9 @@ import android.os.Bundle
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SwitchCompat
+import com.example.playlistmaker.App
+import com.example.playlistmaker.R
 
 class SettingsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -15,9 +18,17 @@ class SettingsActivity : AppCompatActivity() {
         val buttonShare = findViewById<TextView>(R.id.share_app)
         val buttonSupport = findViewById<TextView>(R.id.email_support)
         val buttonAgreement = findViewById<TextView>(R.id.user_agreement)
+        val themesSwitcher = findViewById<SwitchCompat>(R.id.themes_swither)
+
+        val themesApp = (applicationContext as App)
+        themesSwitcher.isChecked = themesApp.darkTheme
 
         buttonBack.setOnClickListener{
             finish()
+        }
+
+        themesSwitcher.setOnCheckedChangeListener { switcher, isChecked ->
+            themesApp.switchTheme(isChecked)
         }
 
         buttonShare.setOnClickListener{
