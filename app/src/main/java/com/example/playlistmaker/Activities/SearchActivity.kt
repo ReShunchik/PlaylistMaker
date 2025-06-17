@@ -1,4 +1,4 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.Activities
 
 import android.os.Bundle
 import android.text.Editable
@@ -12,6 +12,8 @@ import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.playlistmaker.App
+import com.example.playlistmaker.R
 import com.example.playlistmaker.adapters.TrackAdapter
 import com.example.playlistmaker.datas.Track
 import com.example.playlistmaker.datas.TracksResponse

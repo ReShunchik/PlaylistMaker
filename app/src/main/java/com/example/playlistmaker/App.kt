@@ -2,7 +2,6 @@ package com.example.playlistmaker
 
 import android.app.Application
 import android.content.SharedPreferences
-import android.util.Log
 import androidx.appcompat.app.AppCompatDelegate
 import com.example.playlistmaker.datas.Track
 import com.google.gson.Gson
@@ -16,6 +15,15 @@ class App: Application() {
         super.onCreate()
         sharedPreferences = getSharedPreferences(PLAYLIST_MAKER_PREFERENCES, MODE_PRIVATE)
         darkTheme = sharedPreferences.getBoolean(DARKTHEME, false)
+        applySavedTheme()
+    }
+
+    private fun applySavedTheme(){
+        if (darkTheme){
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+        } else {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+        }
     }
 
     fun switchTheme(darkThemeEnabled: Boolean){

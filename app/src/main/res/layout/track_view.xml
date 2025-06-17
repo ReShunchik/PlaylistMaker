@@ -16,8 +16,10 @@
         style="@style/track_info"
         android:layout_marginStart="@dimen/dimen_64dp"
         android:layout_marginTop="@dimen/dimen_12dp"
+        android:layout_marginEnd="@dimen/dimen_44dp"
         android:textSize="@dimen/text_size_16sp"
         android:textColor="?attr/colorPrimary"
+        android:singleLine="true"
         android:text="@string/track_name"/>
 
     <LinearLayout
@@ -30,6 +32,8 @@
         <TextView
             android:id="@+id/track_artist"
             style="@style/track_info"
+            android:maxEms="5"
+            android:singleLine="true"
             android:text="@string/track_artist"/>
 
         <ImageView
