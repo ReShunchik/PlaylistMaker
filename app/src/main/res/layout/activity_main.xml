@@ -44,7 +44,8 @@
 
                 <TextView
                     android:id="@+id/text_search"
-                    style="@style/button_text"
+                    style="@style/medium_text"
+                    android:layout_marginLeft= "@dimen/dimen_8dp"
                     android:text="@string/search" />
 
             </LinearLayout>
@@ -66,7 +67,8 @@
 
                 <TextView
                     android:id="@+id/text_media_library"
-                    style="@style/button_text"
+                    style="@style/medium_text"
+                    android:layout_marginLeft= "@dimen/dimen_8dp"
                     android:text="@string/media_library" />
 
             </LinearLayout>
@@ -89,7 +91,8 @@
 
                 <TextView
                     android:id="@+id/text_settings"
-                    style="@style/button_text"
+                    style="@style/medium_text"
+                    android:layout_marginLeft= "@dimen/dimen_8dp"
                     android:text="@string/settings" />
 
             </LinearLayout>
