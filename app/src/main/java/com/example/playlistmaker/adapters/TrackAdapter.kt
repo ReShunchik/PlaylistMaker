@@ -2,6 +2,7 @@ package com.example.playlistmaker.adapters
 
 import android.content.Context
 import android.content.Intent
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,7 +14,6 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.Activities.AudioPlayerActivity
 import com.example.playlistmaker.Utils.App
 import com.example.playlistmaker.R
-import com.example.playlistmaker.Utils.Utils
 import com.example.playlistmaker.datas.Track
 import java.util.Locale
 import java.text.SimpleDateFormat
@@ -62,7 +62,7 @@ class TrackAdapter(private val context: Context,
         holder.itemView.setOnClickListener{
             app.freshHistory(track)
             val intent = Intent(context, AudioPlayerActivity::class.java)
-            intent.putExtra("track", track)
+            intent.putExtra(TRACK, track)
             context.startActivity(intent)
         }
     }
@@ -88,8 +88,19 @@ class TrackAdapter(private val context: Context,
                 .load(track.artworkUrl100)
                 .placeholder(R.drawable.track_placeholder_100)
                 .centerCrop()
-                .transform(RoundedCorners(Utils.dpToPx(itemView.context, 2f)))
+                .transform(RoundedCorners(dpToPx(2f)))
                 .into(trackImage)
         }
+
+        fun dpToPx(dp: Float): Int {
+            return TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_DIP,
+                dp,
+                itemView.context.resources.displayMetrics).toInt()
+        }
+    }
+
+    companion object{
+        const val TRACK = "track"
     }
 }

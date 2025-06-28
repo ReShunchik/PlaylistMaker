@@ -98,7 +98,6 @@
     <style name="medium_text.main_track_info">
         <item name="android:layout_width">0dp</item>
         <item name="android:textColor">?attr/colorPrimary</item>
-        <item name="android:layout_marginTop">@dimen/dimen_16dp</item>
         <item name="android:singleLine">true</item>
     </style>
 

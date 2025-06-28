@@ -20,7 +20,7 @@
             android:layout_gravity="center_vertical"
             android:layout_margin="4dp"
             android:padding="16dp"
-            android:src="@drawable/icon_back"
+            android:src="@drawable/ic_back_16"
             app:tint="?attr/colorPrimary"/>
 
         <TextView
@@ -45,7 +45,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_marginStart="@dimen/dimen_12dp"
-            android:src="@drawable/icon_search"
+            android:src="@drawable/ic_search_20"
             app:tint="?attr/iconColor" />
 
         <EditText
@@ -68,7 +68,7 @@
             android:id="@+id/clear_button"
             android:layout_width="40dp"
             android:layout_height="match_parent"
-            android:src="@drawable/icon_clear"
+            android:src="@drawable/ic_clear_40"
             android:backgroundTint="?attr/searchFieldColor"
             app:tint="?attr/iconColor"
             android:visibility="gone"/>
@@ -116,7 +116,7 @@
         style="@style/error_layout">
 
         <ImageView
-            android:src="@drawable/no_search_results"
+            android:src="@drawable/ic_no_results_120"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"/>

@@ -27,7 +27,7 @@
                 android:layout_gravity="center_vertical"
                 android:layout_margin="4dp"
                 android:padding="16dp"
-                android:src="@drawable/icon_back"
+                android:src="@drawable/ic_back_16"
                 app:tint="?attr/colorPrimary"/>
 
             <TextView
@@ -56,21 +56,21 @@
             android:id="@+id/share_app"
             style="@style/settings_text"
             android:text="@string/share_app"
-            app:drawableEndCompat="@drawable/icon_share" />
+            app:drawableEndCompat="@drawable/ic_share_16" />
 
 
         <TextView
             android:id="@+id/email_support"
             style="@style/settings_text"
             android:text="@string/email_support"
-            app:drawableEndCompat="@drawable/icon_support"/>
+            app:drawableEndCompat="@drawable/ic_support_24"/>
 
 
         <TextView
             android:id="@+id/user_agreement"
             style="@style/settings_text"
             android:text="@string/user_agreement"
-            app:drawableEndCompat="@drawable/icon_move_on"/>
+            app:drawableEndCompat="@drawable/ic_move_on_24"/>
 
 
     </LinearLayout>
