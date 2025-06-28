@@ -40,11 +40,12 @@
                 <ImageView
                     android:id="@+id/icon_search"
                     style="@style/button_icon"
-                    android:src="@drawable/icon_search"/>
+                    android:src="@drawable/ic_search_20"/>
 
                 <TextView
                     android:id="@+id/text_search"
-                    style="@style/button_text"
+                    style="@style/medium_text"
+                    android:layout_marginLeft= "@dimen/dimen_8dp"
                     android:text="@string/search" />
 
             </LinearLayout>
@@ -62,11 +63,12 @@
                 <ImageView
                     android:id="@+id/icon_media_library"
                     style="@style/button_icon"
-                    android:src="@drawable/icon_media_library"/>
+                    android:src="@drawable/ic_media_library_20"/>
 
                 <TextView
                     android:id="@+id/text_media_library"
-                    style="@style/button_text"
+                    style="@style/medium_text"
+                    android:layout_marginLeft= "@dimen/dimen_8dp"
                     android:text="@string/media_library" />
 
             </LinearLayout>
@@ -85,11 +87,12 @@
                 <ImageView
                     android:id="@+id/icon_settings"
                     style="@style/button_icon"
-                    android:src="@drawable/icon_settings"/>
+                    android:src="@drawable/ic_settings_20"/>
 
                 <TextView
                     android:id="@+id/text_settings"
-                    style="@style/button_text"
+                    style="@style/medium_text"
+                    android:layout_marginLeft= "@dimen/dimen_8dp"
                     android:text="@string/settings" />
 
             </LinearLayout>

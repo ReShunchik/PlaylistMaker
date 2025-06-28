@@ -10,6 +10,7 @@
         <item name="trackArtAndTimeColor">@color/grey</item>
         <item name="controlerPrimaryColor">@color/white</item>
         <item name="controlerSecondaryColor">@color/grey_light</item>
+        <item name="colorPlayerButton">@color/grey_transparent</item>
     </style>
 
     <style name="Theme.PlaylistMaker" parent="Base.Theme.PlaylistMaker" />

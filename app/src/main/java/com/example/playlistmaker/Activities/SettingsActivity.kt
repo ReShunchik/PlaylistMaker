@@ -7,7 +7,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SwitchCompat
-import com.example.playlistmaker.App
+import com.example.playlistmaker.Utils.App
 import com.example.playlistmaker.R
 
 class SettingsActivity : AppCompatActivity() {

@@ -10,5 +10,6 @@
         <item name="trackArtAndTimeColor">@color/white</item>
         <item name="controlerPrimaryColor">@color/blue</item>
         <item name="controlerSecondaryColor">@color/blue_light</item>
+        <item name="colorPlayerButton">@color/grey</item>
     </style>
 </resources>

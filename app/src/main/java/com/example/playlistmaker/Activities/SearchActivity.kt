@@ -12,7 +12,7 @@ import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.playlistmaker.App
+import com.example.playlistmaker.Utils.App
 import com.example.playlistmaker.R
 import com.example.playlistmaker.adapters.TrackAdapter
 import com.example.playlistmaker.datas.Track
@@ -54,7 +54,6 @@ class SearchActivity : AppCompatActivity() {
         initViews()
         val searchField = findViewById<EditText>(R.id.search_input)
         val clearButton = findViewById<ImageButton>(R.id.clear_button)
-        val buttonBack = findViewById<ImageView>(R.id.button_back)
         val updateButton = findViewById<MaterialButton>(R.id.update_request)
         searchHistory = findViewById(R.id.search_history)
         trackList.layoutManager = LinearLayoutManager(this)
@@ -71,7 +70,7 @@ class SearchActivity : AppCompatActivity() {
             showSearchHistory()
         }
 
-        buttonBack.setOnClickListener{
+        findViewById<ImageView>(R.id.button_back).setOnClickListener{
             finish()
         }
 
@@ -119,7 +118,7 @@ class SearchActivity : AppCompatActivity() {
         trackList = findViewById(R.id.track_list)
         noSearchLayout = findViewById(R.id.no_search_result)
         connectionErrorLayout = findViewById(R.id.connection_error)
-        trackAdapter = TrackAdapter(applicationContext as App)
+        trackAdapter = TrackAdapter(this, applicationContext as App)
         initHistory()
     }
 

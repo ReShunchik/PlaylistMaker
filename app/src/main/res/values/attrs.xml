@@ -8,4 +8,5 @@
     <attr name="trackArtAndTimeColor" format="color"/>
     <attr name="controlerPrimaryColor" format="color"/>
     <attr name="controlerSecondaryColor" format="color"/>
+    <attr name="colorPlayerButton" format="color"/>
 </resources>

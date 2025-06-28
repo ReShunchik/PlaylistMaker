@@ -17,7 +17,7 @@
         <item name="android:layout_weight">1</item>
         <item name="android:layout_gravity">center</item>
         <item name="android:layout_marginTop">@dimen/dimen_16dp</item>
-        <item name="android:background">@drawable/white_rounded_layout</item>
+        <item name="android:background">@drawable/rounded_layout</item>
     </style>
 
     <style name="button_title">
@@ -33,10 +33,9 @@
         <item name="android:layout_gravity">center</item>
     </style>
 
-    <style name="button_text">
+    <style name="medium_text">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginLeft">@dimen/dimen_8dp</item>
         <item name="android:textColor">@color/black</item>
         <item name="android:fontFamily">@font/ys_display_medium</item>
         <item name="android:textSize">@dimen/text_size_24sp</item>
@@ -87,6 +86,31 @@
         <item name="android:layout_marginTop">@dimen/dimen_24dp</item>
         <item name="android:layout_gravity">center_horizontal</item>
         <item name="android:backgroundTint">?attr/colorPrimary</item>
+    </style>
+
+    <style name="round_button">
+        <item name="android:layout_width">@dimen/dimen_52dp</item>
+        <item name="android:layout_height">@dimen/dimen_52dp</item>
+        <item name="android:background">@drawable/round_layout</item>
+        <item name="android:scaleType">centerInside</item>
+    </style>
+
+    <style name="medium_text.main_track_info">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:textColor">?attr/colorPrimary</item>
+        <item name="android:singleLine">true</item>
+    </style>
+
+    <style name="track_info.player">
+        <item name="android:textColor">@color/grey</item>
+        <item name="android:layout_marginTop">@dimen/dimen_16dp</item>
+    </style>
+
+    <style name="track_info.player.info">
+        <item name="android:textColor">?attr/colorPrimary</item>
+        <item name="android:layout_marginTop">@dimen/dimen_16dp</item>
+        <item name="android:maxLength">20</item>
+        <item name="android:ellipsize">end</item>
     </style>
 
 </resources>
