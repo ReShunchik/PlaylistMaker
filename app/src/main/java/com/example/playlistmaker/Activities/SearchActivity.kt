@@ -1,6 +1,8 @@
 package com.example.playlistmaker.Activities
 
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
@@ -9,6 +11,7 @@ import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.ProgressBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -35,6 +38,10 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var connectionErrorLayout: LinearLayout
     private lateinit var searchHistory: LinearLayout
     private lateinit var trackAdapter: TrackAdapter
+    private lateinit var progressBar: ProgressBar
+
+    private var searchRunnable = Runnable { searchTracks() }
+    private val handler = Handler(Looper.getMainLooper())
 
     private val retrofit: Retrofit
 
@@ -84,6 +91,7 @@ class SearchActivity : AppCompatActivity() {
                     showSearchHistory()
                 } else {
                     searchHistory.visibility = View.GONE
+                    searchDebounce(searchText)
                 }
             }
 
@@ -94,15 +102,6 @@ class SearchActivity : AppCompatActivity() {
 
         searchField.addTextChangedListener(searchTextWatcher)
 
-        searchField.setOnEditorActionListener { _, actionId, _ ->
-            if (actionId == EditorInfo.IME_ACTION_DONE) {
-                findTracks(searchField.text.toString())
-                true
-            } else {
-                false
-            }
-        }
-
         searchField.setOnFocusChangeListener{view, hasFocus ->
             if(hasFocus && searchField.text.isEmpty()){
                 showSearchHistory()
@@ -110,7 +109,7 @@ class SearchActivity : AppCompatActivity() {
         }
 
         updateButton.setOnClickListener{
-            findTracks(searchField.text.toString())
+            searchTracks()
         }
     }
 
@@ -118,6 +117,7 @@ class SearchActivity : AppCompatActivity() {
         trackList = findViewById(R.id.track_list)
         noSearchLayout = findViewById(R.id.no_search_result)
         connectionErrorLayout = findViewById(R.id.connection_error)
+        progressBar = findViewById(R.id.progress_bar)
         trackAdapter = TrackAdapter(this, applicationContext as App)
         initHistory()
     }
@@ -143,15 +143,18 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
-    private fun findTracks(searchText: String){
+    private fun searchTracks(){
         trackList.visibility = View.GONE
+        progressBar.visibility = View.VISIBLE
         allLayoutGone()
+
         iTunesService.search(searchText)
             .enqueue(object : Callback<TracksResponse>{
                 override fun onResponse(
                     call: Call<TracksResponse>,
                     response: Response<TracksResponse>
                 ) {
+                    progressBar.visibility = View.GONE
                     if(response.isSuccessful){
                         val results = response.body()?.results as List<Track>
                         if (!results.isNullOrEmpty()) {
@@ -166,6 +169,11 @@ class SearchActivity : AppCompatActivity() {
                     connectionErrorLayout.visibility = View.VISIBLE
                 }
             })
+    }
+
+    private fun searchDebounce(searchText: String){
+        handler.removeCallbacks(searchRunnable)
+        handler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY)
     }
 
     private fun clearButtonVisibility(s: CharSequence?): Int {
@@ -197,8 +205,14 @@ class SearchActivity : AppCompatActivity() {
         ): Call<TracksResponse>
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        handler.removeCallbacks(searchRunnable)
+    }
+
     companion object{
-        const val SEARCH_TEXT = "SEARCH_TEXT"
-        const val SEARCH_DEF = ""
+        private const val SEARCH_TEXT = "SEARCH_TEXT"
+        private const val SEARCH_DEF = ""
+        private const val SEARCH_DEBOUNCE_DELAY = 2000L
     }
 }

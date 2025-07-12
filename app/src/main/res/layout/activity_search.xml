@@ -75,6 +75,15 @@
 
     </LinearLayout>
 
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="@dimen/dimen_44dp"
+        android:layout_height="@dimen/dimen_44dp"
+        android:indeterminateTint="@color/blue"
+        android:layout_marginTop="@dimen/dimen_140dp"
+        android:layout_gravity="center_horizontal"
+        android:visibility="gone"/>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/track_list"
         android:layout_width="match_parent"
