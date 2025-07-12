@@ -27,11 +27,12 @@ class AudioPlayerActivity : AppCompatActivity() {
     private var mediaPlayer = MediaPlayer()
     private var playerState = STATE_DEFAULT
     private val handler = Handler(Looper.getMainLooper())
+    private val dateFormat by lazy { SimpleDateFormat("mm:ss", Locale.getDefault()) }
 
     private val timeRunnable = object : Runnable {
         override fun run(){
             if (playerState == STATE_PLAYING) {
-                val currentTime = SimpleDateFormat("mm:ss", Locale.getDefault()).format(mediaPlayer.currentPosition)
+                val currentTime = dateFormat.format(mediaPlayer.currentPosition)
                 currentTrackTime.setText(currentTime)
             }
 
@@ -73,7 +74,7 @@ class AudioPlayerActivity : AppCompatActivity() {
             val artistName = findViewById<TextView>(R.id.track_artist)
             artistName.text = track.artistName
             val trackTime = findViewById<TextView>(R.id.duration_info)
-            trackTime.text = SimpleDateFormat("mm:ss", Locale.getDefault()).format(track.trackTime)
+            trackTime.text = dateFormat.format(track.trackTime)
             val trackGenre = findViewById<TextView>(R.id.genre_info)
             trackGenre.text = track.genre
             val trackCountry = findViewById<TextView>(R.id.country_info)
@@ -150,7 +151,6 @@ class AudioPlayerActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         mediaPlayer.release()
-        handler.removeCallbacks(timeRunnable)
     }
 
     companion object{
