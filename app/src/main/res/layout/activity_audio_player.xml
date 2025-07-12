@@ -111,6 +111,7 @@
             android:src="@drawable/ic_play_84"
             android:backgroundTint="?attr/bgColor"
             android:layout_marginTop="@dimen/dimen_28dp"
+            android:enabled="false"
             app:layout_constraintTop_toBottomOf="@id/track_artist"
             app:layout_constraintStart_toEndOf="@id/add_button"
             app:layout_constraintEnd_toStartOf="@id/like_button"/>
@@ -127,7 +128,7 @@
 
         <TextView
             android:id="@+id/current_time"
-            android:text="0:00"
+            android:text="@string/start_track_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="@dimen/text_size_12sp"

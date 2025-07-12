@@ -20,6 +20,7 @@
     <dimen name="dimen_64dp">64dp</dimen>
     <dimen name="dimen_84dp">84dp</dimen>
     <dimen name="dimen_100dp">100dp</dimen>
+    <dimen name="dimen_140dp">140dp</dimen>
     <dimen name="text_bottom_panel_margin">4dp</dimen>
 
     <dimen name="button_width">328dp</dimen>
