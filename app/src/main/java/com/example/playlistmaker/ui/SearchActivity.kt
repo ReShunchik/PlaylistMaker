@@ -1,4 +1,4 @@
-package com.example.playlistmaker.Activities
+package com.example.playlistmaker.ui
 
 import android.os.Bundle
 import android.os.Handler
@@ -6,7 +6,6 @@ import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
-import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ImageView
@@ -15,19 +14,14 @@ import android.widget.ProgressBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.playlistmaker.Utils.App
+import com.example.playlistmaker.Creator
 import com.example.playlistmaker.R
-import com.example.playlistmaker.adapters.TrackAdapter
-import com.example.playlistmaker.datas.Track
-import com.example.playlistmaker.datas.TracksResponse
+import com.example.playlistmaker.domain.api.consumer.Consumer
+import com.example.playlistmaker.domain.api.consumer.ConsumerData
+import com.example.playlistmaker.ui.adapters.TrackAdapter
+import com.example.playlistmaker.domain.models.Track
 import com.google.android.material.button.MaterialButton
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.http.GET
-import retrofit2.http.Query
+
 
 class SearchActivity : AppCompatActivity() {
 
@@ -40,20 +34,11 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var trackAdapter: TrackAdapter
     private lateinit var progressBar: ProgressBar
 
+    private val getTracksInteractor = Creator.provideTracksInteractor()
+
     private var searchRunnable = Runnable { searchTracks() }
     private val handler = Handler(Looper.getMainLooper())
 
-    private val retrofit: Retrofit
-
-    private val iTunesService: ITunesAPI
-
-    init {
-        retrofit = Retrofit.Builder()
-            .baseUrl("https://itunes.apple.com/")
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-        iTunesService = retrofit.create(ITunesAPI::class.java)
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -91,7 +76,7 @@ class SearchActivity : AppCompatActivity() {
                     showSearchHistory()
                 } else {
                     searchHistory.visibility = View.GONE
-                    searchDebounce(searchText)
+                    searchDebounce()
                 }
             }
 
@@ -148,30 +133,44 @@ class SearchActivity : AppCompatActivity() {
         progressBar.visibility = View.VISIBLE
         allLayoutGone()
 
-        iTunesService.search(searchText)
-            .enqueue(object : Callback<TracksResponse>{
-                override fun onResponse(
-                    call: Call<TracksResponse>,
-                    response: Response<TracksResponse>
-                ) {
-                    progressBar.visibility = View.GONE
-                    if(response.isSuccessful){
-                        val results = response.body()?.results as List<Track>
-                        if (!results.isNullOrEmpty()) {
-                            trackList.visibility = View.VISIBLE
-                            trackAdapter.updateTracks(results)
-                        } else{
-                            noSearchLayout.visibility = View.VISIBLE
+        getTracksInteractor.searchTracks(
+            searchText,
+            consumer = object : Consumer<List<Track>> {
+
+                override fun consume(data: ConsumerData<List<Track>>) {
+                    when(data){
+                        is ConsumerData.Error -> {
+                            when(data.message){
+                                CONNECTION_ERROR -> {
+                                    runOnUiThread{
+                                        connectionErrorLayout.visibility = View.VISIBLE
+                                        progressBar.visibility = View.GONE
+                                    }
+                                }
+                                NO_RESULTS -> {
+                                    runOnUiThread{
+                                        noSearchLayout.visibility = View.VISIBLE
+                                        progressBar.visibility = View.GONE
+                                    }
+                                }
+                            }
+                        }
+
+                        is ConsumerData.Data -> {
+                            runOnUiThread{
+                                trackList.visibility = View.VISIBLE
+                                trackAdapter.updateTracks(data.value)
+                                progressBar.visibility = View.GONE
+                            }
                         }
                     }
+
                 }
-                override fun onFailure(call: Call<TracksResponse>, t: Throwable) {
-                    connectionErrorLayout.visibility = View.VISIBLE
-                }
-            })
+            }
+        )
     }
 
-    private fun searchDebounce(searchText: String){
+    private fun searchDebounce(){
         handler.removeCallbacks(searchRunnable)
         handler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY)
     }
@@ -196,14 +195,7 @@ class SearchActivity : AppCompatActivity() {
         outState.putString(SEARCH_TEXT, searchText)
     }
 
-    interface ITunesAPI {
-        @GET("search")
-        fun search(
-            @Query("term") term: String,
-            @Query("entity") entity: String = "musicTrack",
-            @Query("limit") limit: Int = 25
-        ): Call<TracksResponse>
-    }
+
 
     override fun onDestroy() {
         super.onDestroy()
@@ -214,5 +206,7 @@ class SearchActivity : AppCompatActivity() {
         private const val SEARCH_TEXT = "SEARCH_TEXT"
         private const val SEARCH_DEF = ""
         private const val SEARCH_DEBOUNCE_DELAY = 2000L
+        private const val CONNECTION_ERROR = "Connection Error"
+        private const val NO_RESULTS = "No results"
     }
 }

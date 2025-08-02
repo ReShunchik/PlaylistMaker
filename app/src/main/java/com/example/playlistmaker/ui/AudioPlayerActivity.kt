@@ -1,4 +1,4 @@
-package com.example.playlistmaker.Activities
+package com.example.playlistmaker.ui
 
 import android.media.MediaPlayer
 import android.os.Bundle
@@ -14,7 +14,7 @@ import androidx.constraintlayout.widget.Group
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
-import com.example.playlistmaker.datas.Track
+import com.example.playlistmaker.domain.models.Track
 import java.text.SimpleDateFormat
 import java.time.OffsetDateTime
 import java.util.Locale
@@ -74,7 +74,7 @@ class AudioPlayerActivity : AppCompatActivity() {
             val artistName = findViewById<TextView>(R.id.track_artist)
             artistName.text = track.artistName
             val trackTime = findViewById<TextView>(R.id.duration_info)
-            trackTime.text = dateFormat.format(track.trackTime)
+            trackTime.text = track.trackTime
             val trackGenre = findViewById<TextView>(R.id.genre_info)
             trackGenre.text = track.genre
             val trackCountry = findViewById<TextView>(R.id.country_info)
