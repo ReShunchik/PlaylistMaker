@@ -16,7 +16,7 @@ class TracksInteractorImpl (private val repository: TracksRepository) : TracksIn
         executor.execute {
             val tracksResource = repository.searchTracks(expression)
             if (tracksResource == null){
-                consumer.consume(ConsumerData.Error("No results"))
+                consumer.consume(ConsumerData.Error(NO_RESULT))
             } else {
                 when(tracksResource){
                     is Resource.Error -> {
@@ -24,10 +24,18 @@ class TracksInteractorImpl (private val repository: TracksRepository) : TracksIn
                     }
 
                     is Resource.Success -> {
-                        consumer.consume(ConsumerData.Data(tracksResource.data))
+                        if(tracksResource.data.size == 0){
+                            consumer.consume(ConsumerData.Error(NO_RESULT))
+                        } else {
+                            consumer.consume(ConsumerData.Data(tracksResource.data))
+                        }
                     }
                 }
             }
         }
+    }
+
+    companion object{
+        const val NO_RESULT = "No results"
     }
 }

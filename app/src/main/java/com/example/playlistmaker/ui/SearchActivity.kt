@@ -12,6 +12,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.Creator
@@ -71,11 +72,11 @@ class SearchActivity : AppCompatActivity() {
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                clearButton.visibility = clearButtonVisibility(s)
+                clearButton.isVisible = clearButtonVisibility(s)
                 if (searchField.hasFocus() && s?.isEmpty() == true) {
                     showSearchHistory()
                 } else {
-                    searchHistory.visibility = View.GONE
+                    searchHistory.isVisible = false
                     searchDebounce()
                 }
             }
@@ -110,10 +111,10 @@ class SearchActivity : AppCompatActivity() {
     private fun showSearchHistory(){
         trackAdapter.updateHistoryTracks()
         if(trackAdapter.itemCount == 0){
-            searchHistory.visibility = View.GONE
+            searchHistory.isVisible = false
         } else {
             allLayoutGone()
-            searchHistory.visibility = View.VISIBLE
+            searchHistory.isVisible = true
         }
     }
 
@@ -124,13 +125,13 @@ class SearchActivity : AppCompatActivity() {
         val clearHistory = findViewById<MaterialButton>(R.id.clear_history)
         clearHistory.setOnClickListener{
             trackAdapter.clearHistory()
-            searchHistory.visibility = View.GONE
+            searchHistory.isVisible = false
         }
     }
 
     private fun searchTracks(){
-        trackList.visibility = View.GONE
-        progressBar.visibility = View.VISIBLE
+        trackList.isVisible = false
+        progressBar.isVisible = true
         allLayoutGone()
 
         getTracksInteractor.searchTracks(
@@ -143,14 +144,14 @@ class SearchActivity : AppCompatActivity() {
                             when(data.message){
                                 CONNECTION_ERROR -> {
                                     runOnUiThread{
-                                        connectionErrorLayout.visibility = View.VISIBLE
-                                        progressBar.visibility = View.GONE
+                                        connectionErrorLayout.isVisible = true
+                                        progressBar.isVisible = false
                                     }
                                 }
                                 NO_RESULTS -> {
                                     runOnUiThread{
-                                        noSearchLayout.visibility = View.VISIBLE
-                                        progressBar.visibility = View.GONE
+                                        noSearchLayout.isVisible = true
+                                        progressBar.isVisible = false
                                     }
                                 }
                             }
@@ -158,9 +159,9 @@ class SearchActivity : AppCompatActivity() {
 
                         is ConsumerData.Data -> {
                             runOnUiThread{
-                                trackList.visibility = View.VISIBLE
+                                trackList.isVisible = true
                                 trackAdapter.updateTracks(data.value)
-                                progressBar.visibility = View.GONE
+                                progressBar.isVisible = false
                             }
                         }
                     }
@@ -175,19 +176,15 @@ class SearchActivity : AppCompatActivity() {
         handler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY)
     }
 
-    private fun clearButtonVisibility(s: CharSequence?): Int {
-        return if (s.isNullOrEmpty()) {
-            View.GONE
-        } else {
-            View.VISIBLE
-        }
+    private fun clearButtonVisibility(s: CharSequence?): Boolean {
+        return !s.isNullOrEmpty()
     }
 
     private fun allLayoutGone(){
-        trackList.visibility = View.GONE
-        noSearchLayout.visibility = View.GONE
-        connectionErrorLayout.visibility = View.GONE
-        searchHistory.visibility = View.GONE
+        trackList.isVisible = false
+        noSearchLayout.isVisible = false
+        connectionErrorLayout.isVisible = false
+        searchHistory.isVisible = false
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

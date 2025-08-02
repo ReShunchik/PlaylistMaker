@@ -12,7 +12,8 @@ class App: Application() {
 
     override fun onCreate() {
         super.onCreate()
-        getDarkThemeInteractor = Creator.provideDarkThemeInteractor(this)
+        Creator.context = this
+        getDarkThemeInteractor = Creator.provideDarkThemeInteractor()
         darkTheme = getDarkThemeInteractor.isDarkThemeEnabled()
         applySavedTheme()
     }

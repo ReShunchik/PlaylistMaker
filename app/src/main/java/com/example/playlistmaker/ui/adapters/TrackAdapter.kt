@@ -28,7 +28,7 @@ class TrackAdapter(private val context: Context,
     private val tracks = ArrayList<Track>()
 
     init {
-        getTracksHistoryInteractor = Creator.provideTrackHistoryInteractor(context)
+        getTracksHistoryInteractor = Creator.provideTrackHistoryInteractor()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TrackViewHolder {

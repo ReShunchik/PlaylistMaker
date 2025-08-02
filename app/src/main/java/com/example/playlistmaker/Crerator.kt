@@ -18,6 +18,8 @@ import com.example.playlistmaker.domain.impl.TracksInteractorImpl
 
 object Creator {
 
+    lateinit var context: Context
+
     private fun getTracksRepository(): TracksRepository {
         return TracksRepositoryImpl(RetrofitNetworkClient())
     }
@@ -30,20 +32,20 @@ object Creator {
         return context.getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
     }
 
-    private fun getDarkThemeRepository(context: Context): DarkThemeRepository{
+    private fun getDarkThemeRepository(): DarkThemeRepository{
         return DarkThemeRepositoryImpl(getSharedPreferences(context))
     }
 
-    fun provideDarkThemeInteractor(context: Context): DarkThemeInteractor{
-        return DarkThemeInteractorImpl(getDarkThemeRepository(context))
+    fun provideDarkThemeInteractor(): DarkThemeInteractor{
+        return DarkThemeInteractorImpl(getDarkThemeRepository())
     }
 
-    private fun getTrackHistoryRepository(context: Context): TracksHistoryRepository{
+    private fun getTrackHistoryRepository(): TracksHistoryRepository{
         return TracksHistoryRepositoryImpl(getSharedPreferences(context))
     }
 
-    fun provideTrackHistoryInteractor(context: Context): TracksHistoryInteractor{
-         return TracksHistoryInteractorImpl(getTrackHistoryRepository(context))
+    fun provideTrackHistoryInteractor(): TracksHistoryInteractor{
+         return TracksHistoryInteractorImpl(getTrackHistoryRepository())
      }
 
 }
