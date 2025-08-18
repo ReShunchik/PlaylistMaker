@@ -4,25 +4,37 @@ import android.content.Context
 import android.content.Intent
 import android.util.TypedValue
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import com.example.playlistmaker.ui.audioPlayer.activity.AudioPlayerActivity
+import com.example.playlistmaker.Creator
+import com.example.playlistmaker.ui.AudioPlayerActivity
+import com.example.playlistmaker.ui.App
 import com.example.playlistmaker.R
-import com.example.playlistmaker.databinding.TrackViewBinding
+import com.example.playlistmaker.domain.api.TracksHistoryInteractor
 import com.example.playlistmaker.domain.models.Track
-import com.example.playlistmaker.ui.search.viewModel.SearchViewModel
 
 
-class TrackAdapter(
-    private val context: Context,
-    private val viewModel: SearchViewModel
+class TrackAdapter(private val context: Context,
+                   private val app: App
 ): RecyclerView.Adapter<TrackAdapter.TrackViewHolder>() {
+
+    private val getTracksHistoryInteractor: TracksHistoryInteractor
 
     private val tracks = ArrayList<Track>()
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TrackViewHolder = TrackViewHolder.from(parent)
+    init {
+        getTracksHistoryInteractor = Creator.provideTrackHistoryInteractor()
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TrackViewHolder {
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.track_view, parent, false)
+        return TrackViewHolder(view, app)
+    }
 
     fun updateTracks(newTracks: List<Track>){
         tracks.clear()
@@ -30,9 +42,20 @@ class TrackAdapter(
         notifyDataSetChanged()
     }
 
+    fun updateHistoryTracks(){
+        tracks.clear()
+        tracks.addAll(getTracksHistoryInteractor.getTracks())
+        notifyDataSetChanged()
+    }
+
     fun clearTracks(){
         tracks.clear()
         notifyDataSetChanged()
+    }
+
+    fun clearHistory(){
+        getTracksHistoryInteractor.clearHistory()
+        clearTracks()
     }
 
     override fun getItemCount(): Int {
@@ -43,25 +66,36 @@ class TrackAdapter(
         val track = tracks[position]
         holder.bind(track)
         holder.itemView.setOnClickListener{
-            viewModel.freshHistory(track)
+            getTracksHistoryInteractor.freshHistory(track)
             val intent = Intent(context, AudioPlayerActivity::class.java)
             intent.putExtra(TRACK, track)
             context.startActivity(intent)
         }
     }
 
-    class TrackViewHolder(private val binding: TrackViewBinding): RecyclerView.ViewHolder(binding.root){
+    class TrackViewHolder(itemView: View, val app: App): RecyclerView.ViewHolder(itemView){
+        private val trackName: TextView
+        private val trackArtist: TextView
+        private val trackTime: TextView
+        private val trackImage: ImageView
+
+        init {
+            trackName = itemView.findViewById(R.id.track_name)
+            trackArtist = itemView.findViewById(R.id.track_artist)
+            trackTime = itemView.findViewById(R.id.track_time)
+            trackImage = itemView.findViewById(R.id.track_image)
+        }
 
         fun bind(track: Track){
-            binding.trackName.text = track.trackName
-            binding.trackArtist.text = track.artistName
-            binding.trackTime.text = track.trackTime
+            trackName.text = track.trackName
+            trackArtist.text = track.artistName
+            trackTime.text = track.trackTime
             Glide.with(itemView.context)
                 .load(track.artworkUrl100)
                 .placeholder(R.drawable.track_placeholder_100)
                 .centerCrop()
                 .transform(RoundedCorners(dpToPx(2f)))
-                .into(binding.trackImage)
+                .into(trackImage)
         }
 
         fun dpToPx(dp: Float): Int {
@@ -69,14 +103,6 @@ class TrackAdapter(
                 TypedValue.COMPLEX_UNIT_DIP,
                 dp,
                 itemView.context.resources.displayMetrics).toInt()
-        }
-
-        companion object{
-            fun from(parent: ViewGroup, ): TrackViewHolder {
-                val inflater = LayoutInflater.from(parent.context)
-                val binding = TrackViewBinding.inflate(inflater, parent, false)
-                return TrackViewHolder(binding)
-            }
         }
     }
 

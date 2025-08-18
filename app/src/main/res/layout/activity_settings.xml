@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:background="?attr/bgColor"
     android:orientation="vertical"
-    tools:context=".ui.settings.activity.SettingsActivity">
+    tools:context=".ui.SettingsActivity">
 
     <LinearLayout
         android:id="@+id/body"
@@ -39,7 +39,7 @@
         </FrameLayout>
 
         <androidx.appcompat.widget.SwitchCompat
-            android:id="@+id/themes_switcher"
+            android:id="@+id/themes_swither"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingHorizontal="@dimen/dimen_16dp"
@@ -67,7 +67,7 @@
 
 
         <TextView
-            android:id="@+id/terms"
+            android:id="@+id/user_agreement"
             style="@style/settings_text"
             android:text="@string/user_agreement"
             app:drawableEndCompat="@drawable/ic_move_on_24"/>
