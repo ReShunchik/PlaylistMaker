@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="?attr/bgMainColor"
-    tools:context=".ui.MainActivity">
+    tools:context=".ui.main.MainActivity">
 
     <LinearLayout
         android:id="@+id/header"
@@ -76,7 +76,7 @@
         </FrameLayout>
 
         <FrameLayout
-            android:id="@+id/settins_button"
+            android:id="@+id/settings_button"
             style="@style/layout_button"
             android:layout_marginBottom="@dimen/dimen_16dp">
 
