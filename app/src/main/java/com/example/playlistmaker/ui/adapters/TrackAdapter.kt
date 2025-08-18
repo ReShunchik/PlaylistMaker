@@ -1,4 +1,4 @@
-package com.example.playlistmaker.adapters
+package com.example.playlistmaker.ui.adapters
 
 import android.content.Context
 import android.content.Intent
@@ -11,19 +11,25 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import com.example.playlistmaker.Activities.AudioPlayerActivity
-import com.example.playlistmaker.Utils.App
+import com.example.playlistmaker.Creator
+import com.example.playlistmaker.ui.AudioPlayerActivity
+import com.example.playlistmaker.ui.App
 import com.example.playlistmaker.R
-import com.example.playlistmaker.datas.Track
-import java.util.Locale
-import java.text.SimpleDateFormat
+import com.example.playlistmaker.domain.api.TracksHistoryInteractor
+import com.example.playlistmaker.domain.models.Track
 
 
 class TrackAdapter(private val context: Context,
                    private val app: App
 ): RecyclerView.Adapter<TrackAdapter.TrackViewHolder>() {
 
+    private val getTracksHistoryInteractor: TracksHistoryInteractor
+
     private val tracks = ArrayList<Track>()
+
+    init {
+        getTracksHistoryInteractor = Creator.provideTrackHistoryInteractor()
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TrackViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.track_view, parent, false)
@@ -38,7 +44,7 @@ class TrackAdapter(private val context: Context,
 
     fun updateHistoryTracks(){
         tracks.clear()
-        tracks.addAll(app.readTracks())
+        tracks.addAll(getTracksHistoryInteractor.getTracks())
         notifyDataSetChanged()
     }
 
@@ -48,7 +54,7 @@ class TrackAdapter(private val context: Context,
     }
 
     fun clearHistory(){
-        app.clearHistory()
+        getTracksHistoryInteractor.clearHistory()
         clearTracks()
     }
 
@@ -60,7 +66,7 @@ class TrackAdapter(private val context: Context,
         val track = tracks[position]
         holder.bind(track)
         holder.itemView.setOnClickListener{
-            app.freshHistory(track)
+            getTracksHistoryInteractor.freshHistory(track)
             val intent = Intent(context, AudioPlayerActivity::class.java)
             intent.putExtra(TRACK, track)
             context.startActivity(intent)
@@ -83,7 +89,7 @@ class TrackAdapter(private val context: Context,
         fun bind(track: Track){
             trackName.text = track.trackName
             trackArtist.text = track.artistName
-            trackTime.text = SimpleDateFormat("mm:ss", Locale.getDefault()).format(track.trackTime)
+            trackTime.text = track.trackTime
             Glide.with(itemView.context)
                 .load(track.artworkUrl100)
                 .placeholder(R.drawable.track_placeholder_100)

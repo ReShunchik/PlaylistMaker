@@ -1,4 +1,4 @@
-package com.example.playlistmaker.Activities
+package com.example.playlistmaker.ui
 
 import android.os.Bundle
 import android.os.Handler
@@ -6,28 +6,23 @@ import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
-import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.playlistmaker.Utils.App
+import com.example.playlistmaker.Creator
 import com.example.playlistmaker.R
-import com.example.playlistmaker.adapters.TrackAdapter
-import com.example.playlistmaker.datas.Track
-import com.example.playlistmaker.datas.TracksResponse
+import com.example.playlistmaker.domain.api.consumer.Consumer
+import com.example.playlistmaker.domain.api.consumer.ConsumerData
+import com.example.playlistmaker.ui.adapters.TrackAdapter
+import com.example.playlistmaker.domain.models.Track
 import com.google.android.material.button.MaterialButton
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.http.GET
-import retrofit2.http.Query
+
 
 class SearchActivity : AppCompatActivity() {
 
@@ -40,20 +35,11 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var trackAdapter: TrackAdapter
     private lateinit var progressBar: ProgressBar
 
+    private val getTracksInteractor = Creator.provideTracksInteractor()
+
     private var searchRunnable = Runnable { searchTracks() }
     private val handler = Handler(Looper.getMainLooper())
 
-    private val retrofit: Retrofit
-
-    private val iTunesService: ITunesAPI
-
-    init {
-        retrofit = Retrofit.Builder()
-            .baseUrl("https://itunes.apple.com/")
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-        iTunesService = retrofit.create(ITunesAPI::class.java)
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -86,12 +72,12 @@ class SearchActivity : AppCompatActivity() {
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                clearButton.visibility = clearButtonVisibility(s)
+                clearButton.isVisible = clearButtonVisibility(s)
                 if (searchField.hasFocus() && s?.isEmpty() == true) {
                     showSearchHistory()
                 } else {
-                    searchHistory.visibility = View.GONE
-                    searchDebounce(searchText)
+                    searchHistory.isVisible = false
+                    searchDebounce()
                 }
             }
 
@@ -125,10 +111,10 @@ class SearchActivity : AppCompatActivity() {
     private fun showSearchHistory(){
         trackAdapter.updateHistoryTracks()
         if(trackAdapter.itemCount == 0){
-            searchHistory.visibility = View.GONE
+            searchHistory.isVisible = false
         } else {
             allLayoutGone()
-            searchHistory.visibility = View.VISIBLE
+            searchHistory.isVisible = true
         }
     }
 
@@ -139,56 +125,66 @@ class SearchActivity : AppCompatActivity() {
         val clearHistory = findViewById<MaterialButton>(R.id.clear_history)
         clearHistory.setOnClickListener{
             trackAdapter.clearHistory()
-            searchHistory.visibility = View.GONE
+            searchHistory.isVisible = false
         }
     }
 
     private fun searchTracks(){
-        trackList.visibility = View.GONE
-        progressBar.visibility = View.VISIBLE
+        trackList.isVisible = false
+        progressBar.isVisible = true
         allLayoutGone()
 
-        iTunesService.search(searchText)
-            .enqueue(object : Callback<TracksResponse>{
-                override fun onResponse(
-                    call: Call<TracksResponse>,
-                    response: Response<TracksResponse>
-                ) {
-                    progressBar.visibility = View.GONE
-                    if(response.isSuccessful){
-                        val results = response.body()?.results as List<Track>
-                        if (!results.isNullOrEmpty()) {
-                            trackList.visibility = View.VISIBLE
-                            trackAdapter.updateTracks(results)
-                        } else{
-                            noSearchLayout.visibility = View.VISIBLE
+        getTracksInteractor.searchTracks(
+            searchText,
+            consumer = object : Consumer<List<Track>> {
+
+                override fun consume(data: ConsumerData<List<Track>>) {
+                    when(data){
+                        is ConsumerData.Error -> {
+                            when(data.message){
+                                CONNECTION_ERROR -> {
+                                    runOnUiThread{
+                                        connectionErrorLayout.isVisible = true
+                                        progressBar.isVisible = false
+                                    }
+                                }
+                                NO_RESULTS -> {
+                                    runOnUiThread{
+                                        noSearchLayout.isVisible = true
+                                        progressBar.isVisible = false
+                                    }
+                                }
+                            }
+                        }
+
+                        is ConsumerData.Data -> {
+                            runOnUiThread{
+                                trackList.isVisible = true
+                                trackAdapter.updateTracks(data.value)
+                                progressBar.isVisible = false
+                            }
                         }
                     }
+
                 }
-                override fun onFailure(call: Call<TracksResponse>, t: Throwable) {
-                    connectionErrorLayout.visibility = View.VISIBLE
-                }
-            })
+            }
+        )
     }
 
-    private fun searchDebounce(searchText: String){
+    private fun searchDebounce(){
         handler.removeCallbacks(searchRunnable)
         handler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY)
     }
 
-    private fun clearButtonVisibility(s: CharSequence?): Int {
-        return if (s.isNullOrEmpty()) {
-            View.GONE
-        } else {
-            View.VISIBLE
-        }
+    private fun clearButtonVisibility(s: CharSequence?): Boolean {
+        return !s.isNullOrEmpty()
     }
 
     private fun allLayoutGone(){
-        trackList.visibility = View.GONE
-        noSearchLayout.visibility = View.GONE
-        connectionErrorLayout.visibility = View.GONE
-        searchHistory.visibility = View.GONE
+        trackList.isVisible = false
+        noSearchLayout.isVisible = false
+        connectionErrorLayout.isVisible = false
+        searchHistory.isVisible = false
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -196,14 +192,7 @@ class SearchActivity : AppCompatActivity() {
         outState.putString(SEARCH_TEXT, searchText)
     }
 
-    interface ITunesAPI {
-        @GET("search")
-        fun search(
-            @Query("term") term: String,
-            @Query("entity") entity: String = "musicTrack",
-            @Query("limit") limit: Int = 25
-        ): Call<TracksResponse>
-    }
+
 
     override fun onDestroy() {
         super.onDestroy()
@@ -214,5 +203,7 @@ class SearchActivity : AppCompatActivity() {
         private const val SEARCH_TEXT = "SEARCH_TEXT"
         private const val SEARCH_DEF = ""
         private const val SEARCH_DEBOUNCE_DELAY = 2000L
+        private const val CONNECTION_ERROR = "Connection Error"
+        private const val NO_RESULTS = "No results"
     }
 }

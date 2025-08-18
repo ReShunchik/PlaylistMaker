@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:background="?attr/bgColor"
     android:orientation="vertical"
-    tools:context=".Activities.SettingsActivity">
+    tools:context=".ui.SettingsActivity">
 
     <LinearLayout
         android:id="@+id/body"
