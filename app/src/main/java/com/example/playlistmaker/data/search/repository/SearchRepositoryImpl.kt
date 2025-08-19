@@ -2,11 +2,11 @@ package com.example.playlistmaker.data.search.repository
 
 import com.example.playlistmaker.data.dto.TracksSearchRequest
 import com.example.playlistmaker.domain.search.api.SearchRepository
-import com.example.playlistmaker.domain.models.Track
+import com.example.playlistmaker.domain.search.models.Track
 import com.example.playlistmaker.data.dto.TracksSearchResponse
 import com.example.playlistmaker.data.mapper.DataMapper
 import com.example.playlistmaker.data.search.network.NetworkClient
-import com.example.playlistmaker.domain.models.Resource
+import com.example.playlistmaker.domain.search.models.Resource
 
 class SearchRepositoryImpl (private val networkClient: NetworkClient) : SearchRepository {
 

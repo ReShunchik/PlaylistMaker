@@ -9,7 +9,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.ActivityAudioPlayerBinding
-import com.example.playlistmaker.domain.models.Track
+import com.example.playlistmaker.domain.search.models.Track
 import com.example.playlistmaker.ui.audioPlayer.viewModel.AudioPlayerViewModel
 import com.example.playlistmaker.ui.audioPlayer.viewModel.PlayerState
 import java.time.OffsetDateTime
@@ -35,22 +35,24 @@ class AudioPlayerActivity : AppCompatActivity() {
             viewModel.playbackControl()
         }
 
-        viewModel.observeCurrentTime().observe(this){
-            binding.currentTime.setText(it)
-        }
-
         viewModel.observePlayerStare().observe(this){
             when(it){
-                is PlayerState.Playing -> showPlaying()
+                is PlayerState.Playing -> {
+                    showPlaying()
+                    binding.currentTime.setText(it.currentTime)
+                }
                 is PlayerState.Paused -> showPaused()
                 is PlayerState.Default -> showDefault()
                 is PlayerState.Prepared -> showPrepared()
+                is PlayerState.Finished -> {
+                    binding.currentTime.setText(TIME_DEFAULT)
+                }
             }
         }
     }
 
     private fun setInfo(){
-        val track: Track? = intent.getParcelableExtra(TRACK)
+        val track: Track? = intent.getSerializableExtra(TRACK) as Track
         if (track != null){
             val atworkUrl512 = track.artworkUrl100.replace("100x100", "512x512")
             Glide.with(this)
@@ -114,5 +116,6 @@ class AudioPlayerActivity : AppCompatActivity() {
 
     companion object{
         private const val TRACK = "track"
+        private val TIME_DEFAULT = R.string.start_track_time
     }
 }

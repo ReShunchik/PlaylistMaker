@@ -13,7 +13,7 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.playlistmaker.creator.Creator
 import com.example.playlistmaker.domain.api.consumer.Consumer
 import com.example.playlistmaker.domain.api.consumer.ConsumerData
-import com.example.playlistmaker.domain.models.Track
+import com.example.playlistmaker.domain.search.models.Track
 import com.example.playlistmaker.domain.search.api.SearchHistoryInteractor
 import com.example.playlistmaker.domain.search.api.SearchInteractor
 
@@ -25,9 +25,6 @@ class SearchViewModel(
     private val handler = Handler(Looper.getMainLooper())
 
     private var latestSearchText = SEARCH_DEF
-
-    private val history= ArrayList<Track>()
-    fun getHistory() = history
 
     private val trackStateLiveData = MutableLiveData<TracksState>()
     fun observeTrackState(): LiveData<TracksState> = trackStateLiveData
@@ -50,7 +47,15 @@ class SearchViewModel(
                                 }
 
                                 NO_RESULTS -> {
-                                    trackStateLiveData.postValue(TracksState.Empty(data.message))
+                                    val history: ArrayList<Track>?
+                                    if(searchText.isNullOrEmpty()){
+                                        history = searchHistoryInteractor.getHistory()
+                                    } else {
+                                        history = null
+                                    }
+                                    trackStateLiveData.postValue(TracksState.Empty(
+                                        data.message,
+                                        history))
                                 }
                             }
                         }
@@ -71,12 +76,6 @@ class SearchViewModel(
 
     fun freshHistory(track: Track){
         searchHistoryInteractor.freshHistory(track)
-        updateHistory()
-    }
-
-    private fun updateHistory(){
-        history.clear()
-        history.addAll(searchHistoryInteractor.getHistory())
     }
 
     fun searchDebounce(changedText: String){

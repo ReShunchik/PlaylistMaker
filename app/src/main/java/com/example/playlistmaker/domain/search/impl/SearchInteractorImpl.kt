@@ -4,8 +4,8 @@ import com.example.playlistmaker.domain.search.api.SearchInteractor
 import com.example.playlistmaker.domain.search.api.SearchRepository
 import com.example.playlistmaker.domain.api.consumer.Consumer
 import com.example.playlistmaker.domain.api.consumer.ConsumerData
-import com.example.playlistmaker.domain.models.Resource
-import com.example.playlistmaker.domain.models.Track
+import com.example.playlistmaker.domain.search.models.Resource
+import com.example.playlistmaker.domain.search.models.Track
 import java.util.concurrent.Executors
 
 class SearchInteractorImpl (private val repository: SearchRepository) : SearchInteractor {

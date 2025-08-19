@@ -1,5 +1,6 @@
 package com.example.playlistmaker.ui.search.activity
 
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -8,8 +9,9 @@ import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.playlistmaker.databinding.ActivitySearchBinding
-import com.example.playlistmaker.ui.adapters.TrackAdapter
-import com.example.playlistmaker.domain.models.Track
+import com.example.playlistmaker.ui.search.adapters.TrackAdapter
+import com.example.playlistmaker.domain.search.models.Track
+import com.example.playlistmaker.ui.audioPlayer.activity.AudioPlayerActivity
 import com.example.playlistmaker.ui.search.viewModel.SearchViewModel
 import com.example.playlistmaker.ui.search.viewModel.TracksState
 
@@ -38,8 +40,8 @@ class SearchActivity : AppCompatActivity() {
 
         binding.clearButton.setOnClickListener{
             binding.searchInput.setText("")
+            viewModel.searchDebounce("")
             trackAdapter.clearTracks()
-            showSearchHistory()
         }
 
         binding.clearHistory.setOnClickListener{
@@ -58,14 +60,13 @@ class SearchActivity : AppCompatActivity() {
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 binding.clearButton.isVisible = clearButtonVisibility(s)
-                if (binding.searchInput.hasFocus() && s?.isEmpty() == true) {
+                /*if (binding.searchInput.hasFocus() && s?.isEmpty() == true) {
                     showSearchHistory()
                 } else {
-                    binding.searchHistory.isVisible = false
-                    viewModel?.searchDebounce(
-                        changedText = s?.toString() ?: ""
-                    )
-                }
+                    binding.searchHistory.isVisible = false*/
+                viewModel?.searchDebounce(
+                    changedText = s?.toString() ?: ""
+                )
             }
 
             override fun afterTextChanged(s: Editable?) {
@@ -75,26 +76,28 @@ class SearchActivity : AppCompatActivity() {
 
         binding.searchInput.addTextChangedListener(searchTextWatcher)
 
-        binding.searchInput.setOnFocusChangeListener{view, hasFocus ->
+        /*binding.searchInput.setOnFocusChangeListener{view, hasFocus ->
             if(hasFocus && binding.searchInput.text.isEmpty()){
                 showSearchHistory()
             }
-        }
+        }*/
 
         binding.updateRequest.setOnClickListener{
             viewModel?.searchRequest()
         }
 
         viewModel.observeTrackState().observe(this){
-            if(searchText.isEmpty()){
-                showSearchHistory()
-            } else {
-                when(it){
-                    is TracksState.Content -> showContent(it.tracks)
-                    is TracksState.Error -> showError()
-                    is TracksState.Empty -> showNoResults()
-                    is TracksState.Loading -> showLoading()
+            when (it) {
+                is TracksState.Content -> showContent(it.tracks)
+                is TracksState.Error -> showError()
+                is TracksState.Empty -> {
+                    if(it.history == null){
+                        showNoResults()
+                    } else {
+                        showSearchHistory(it.history)
+                    }
                 }
+                is TracksState.Loading -> showLoading()
             }
         }
     }
@@ -104,12 +107,17 @@ class SearchActivity : AppCompatActivity() {
             this,
             SearchViewModel.getFactory()
         ).get(SearchViewModel::class.java)
-        trackAdapter = TrackAdapter(this, viewModel)
+        trackAdapter = TrackAdapter{ track ->
+            viewModel.freshHistory(track)
+            val intent = Intent(this, AudioPlayerActivity::class.java)
+            intent.putExtra(TRACK, track)
+            startActivity(intent)
+        }
         initHistory()
     }
 
-    private fun showSearchHistory(){
-        trackAdapter.updateTracks(viewModel.getHistory())
+    private fun showSearchHistory(history: ArrayList<Track>){
+        trackAdapter.updateTracks(history)
         if(trackAdapter.itemCount == 0){
             binding.searchHistory.isVisible = false
         } else {
@@ -176,5 +184,9 @@ class SearchActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         searchTextWatcher?.let { binding.searchInput.removeTextChangedListener(it) }
+    }
+
+    companion object{
+        const val TRACK = "track"
     }
 }

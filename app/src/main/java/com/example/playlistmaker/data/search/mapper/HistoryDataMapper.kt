@@ -1,7 +1,7 @@
 package com.example.playlistmaker.data.search.mapper
 
 import com.example.playlistmaker.data.dto.SavedTrackDto
-import com.example.playlistmaker.domain.models.Track
+import com.example.playlistmaker.domain.search.models.Track
 
 object HistoryDataMapper {
 

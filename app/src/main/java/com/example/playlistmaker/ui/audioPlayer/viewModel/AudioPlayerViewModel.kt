@@ -14,24 +14,22 @@ import java.text.SimpleDateFormat
 import java.util.Locale
 
 class AudioPlayerViewModel(
-    private val url: String): ViewModel() {
-
-    private val currentTimeLivedata = MutableLiveData(START_TIME)
-    fun observeCurrentTime(): LiveData<String> = currentTimeLivedata
+    private val mediaPlayer: MediaPlayer,
+    private val url: String
+) : ViewModel() {
 
     private val playerStateLiveData = MutableLiveData<PlayerState>(PlayerState.Default)
     fun observePlayerStare(): LiveData<PlayerState> = playerStateLiveData
 
-    private var mediaPlayer = MediaPlayer()
-
     private val handler = Handler(Looper.getMainLooper())
     private val dateFormat by lazy { SimpleDateFormat("mm:ss", Locale.getDefault()) }
+    private var currentTime = START_TIME
 
     private val timeRunnable = object : Runnable {
-        override fun run(){
+        override fun run() {
             if (playerStateLiveData.value is PlayerState.Playing) {
-                val currentTime = dateFormat.format(mediaPlayer.currentPosition)
-                currentTimeLivedata.postValue(currentTime)
+                currentTime = dateFormat.format(mediaPlayer.currentPosition)
+                playerStateLiveData.postValue(PlayerState.Playing(currentTime))
             }
             val postTime = SystemClock.uptimeMillis() + TIME_UPDATE_DELAY
             handler.postAtTime(
@@ -42,8 +40,11 @@ class AudioPlayerViewModel(
         }
     }
 
-    init{
+    init {
         preparePlayer()
+        mediaPlayer.setOnCompletionListener {
+            playerStateLiveData.postValue(PlayerState.Finished)
+        }
     }
 
     private fun preparePlayer() {
@@ -58,14 +59,16 @@ class AudioPlayerViewModel(
     }
 
     fun playbackControl() {
-        when(playerStateLiveData.value) {
+        when (playerStateLiveData.value) {
             is PlayerState.Playing -> {
                 pausePlayer()
             }
+
             is PlayerState.Prepared,
             is PlayerState.Paused -> {
                 startPlayer()
             }
+
             else -> preparePlayer()
         }
     }
@@ -73,8 +76,7 @@ class AudioPlayerViewModel(
     private fun startPlayer() {
         mediaPlayer.start()
         handler.post(timeRunnable)
-
-        playerStateLiveData.postValue(PlayerState.Playing)
+        playerStateLiveData.postValue(PlayerState.Playing(currentTime))
     }
 
     fun pausePlayer() {
@@ -88,14 +90,15 @@ class AudioPlayerViewModel(
         mediaPlayer.release()
     }
 
-    companion object{
+    companion object {
         private const val START_TIME = "00:00"
         private val TIME_UPDATE_TOKEN = Any()
         private const val TIME_UPDATE_DELAY = 300L
 
         fun getFactory(url: String): ViewModelProvider.Factory = viewModelFactory {
             initializer {
-                AudioPlayerViewModel(url)
+                val mediaPlayer = MediaPlayer()
+                AudioPlayerViewModel(mediaPlayer, url)
             }
         }
     }

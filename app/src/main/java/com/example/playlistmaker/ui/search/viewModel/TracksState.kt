@@ -1,6 +1,6 @@
 package com.example.playlistmaker.ui.search.viewModel
 
-import com.example.playlistmaker.domain.models.Track
+import com.example.playlistmaker.domain.search.models.Track
 
 sealed interface TracksState {
 
@@ -15,6 +15,7 @@ sealed interface TracksState {
     ) : TracksState
 
     data class Empty(
-        val message: String
+        val message: String,
+        val history: ArrayList<Track>?
     ) : TracksState
 }

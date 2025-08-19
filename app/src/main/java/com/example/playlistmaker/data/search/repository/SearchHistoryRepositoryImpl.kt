@@ -5,7 +5,7 @@ import com.example.playlistmaker.data.dto.SavedTrackDto
 import com.example.playlistmaker.data.search.mapper.HistoryDataMapper
 import com.example.playlistmaker.data.search.storage.StorageClient
 import com.example.playlistmaker.domain.search.api.SearchHistoryRepository
-import com.example.playlistmaker.domain.models.Track
+import com.example.playlistmaker.domain.search.models.Track
 
 class SearchHistoryRepositoryImpl(
     private val storageClient: StorageClient<ArrayList<SavedTrackDto>>

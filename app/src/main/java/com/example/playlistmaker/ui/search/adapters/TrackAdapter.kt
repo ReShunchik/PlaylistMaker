@@ -1,28 +1,24 @@
-package com.example.playlistmaker.ui.adapters
+package com.example.playlistmaker.ui.search.adapters
 
-import android.content.Context
-import android.content.Intent
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import com.example.playlistmaker.ui.audioPlayer.activity.AudioPlayerActivity
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.TrackViewBinding
-import com.example.playlistmaker.domain.models.Track
-import com.example.playlistmaker.ui.search.viewModel.SearchViewModel
+import com.example.playlistmaker.domain.search.models.Track
 
 
 class TrackAdapter(
-    private val context: Context,
-    private val viewModel: SearchViewModel
+    private val onItemClick: (track: Track) -> Unit
 ): RecyclerView.Adapter<TrackAdapter.TrackViewHolder>() {
 
     private val tracks = ArrayList<Track>()
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TrackViewHolder = TrackViewHolder.from(parent)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TrackViewHolder =
+        TrackViewHolder.from(parent)
 
     fun updateTracks(newTracks: List<Track>){
         tracks.clear()
@@ -43,10 +39,7 @@ class TrackAdapter(
         val track = tracks[position]
         holder.bind(track)
         holder.itemView.setOnClickListener{
-            viewModel.freshHistory(track)
-            val intent = Intent(context, AudioPlayerActivity::class.java)
-            intent.putExtra(TRACK, track)
-            context.startActivity(intent)
+            onItemClick(track)
         }
     }
 
@@ -80,7 +73,4 @@ class TrackAdapter(
         }
     }
 
-    companion object{
-        const val TRACK = "track"
-    }
 }

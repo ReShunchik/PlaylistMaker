@@ -1,10 +1,7 @@
-package com.example.playlistmaker.domain.models
+package com.example.playlistmaker.domain.search.models
 
-import android.os.Parcelable
-import com.google.gson.annotations.SerializedName
-import kotlinx.parcelize.Parcelize
+import java.io.Serializable
 
-@Parcelize
 data class Track(val trackName: String,
                  val artistName: String,
                  val trackTime: String,
@@ -14,4 +11,4 @@ data class Track(val trackName: String,
                  val album: String?,
                  val year: String?,
                  val previewUrl: String
-                 ) : Parcelable
+                 ) : Serializable

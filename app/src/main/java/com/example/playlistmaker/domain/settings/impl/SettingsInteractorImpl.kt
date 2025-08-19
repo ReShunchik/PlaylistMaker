@@ -18,4 +18,8 @@ class SettingsInteractorImpl(
         settingsRepository.updateThemeSetting(ThemeSettingsMapper.mapToDto(settings))
     }
 
+    override fun applySavedTheme() {
+        settingsRepository.applySavedTheme()
+    }
+
 }

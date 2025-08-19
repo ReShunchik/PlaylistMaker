@@ -1,7 +1,7 @@
 package com.example.playlistmaker.domain.search.api
 
 import com.example.playlistmaker.data.dto.SavedTrackDto
-import com.example.playlistmaker.domain.models.Track
+import com.example.playlistmaker.domain.search.models.Track
 
 interface SearchHistoryRepository {
     fun freshHistory(track: SavedTrackDto)

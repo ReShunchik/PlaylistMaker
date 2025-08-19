@@ -28,9 +28,9 @@ object Creator {
 
     lateinit var context: Context
 
-    private val APP_PREFERENCES = "app_prefs"
-    private val HISTORY_KEY = "history"
-    private val THEME_SETTINGS_KEY = "theme_settings"
+    private const val APP_PREFERENCES = "app_prefs"
+    private const val HISTORY_KEY = "history"
+    private const val THEME_SETTINGS_KEY = "theme_settings"
 
     private fun getTracksRepository(): SearchRepository {
         return SearchRepositoryImpl(RetrofitNetworkClient())
