@@ -3,11 +3,13 @@ package com.example.playlistmaker.data.search.network
 import com.example.playlistmaker.data.dto.Response
 import com.example.playlistmaker.data.dto.TracksSearchRequest
 
-class RetrofitNetworkClient: NetworkClient {
+class RetrofitNetworkClient(
+    private val api: ITunesApi
+): NetworkClient {
 
     override fun doRequest(searchRequest: TracksSearchRequest): Response {
         return try {
-            val response = RetrofitClient.api.search(searchRequest.request).execute()
+            val response = api.search(searchRequest.request).execute()
             val networkResponse = response.body() ?: Response()
 
             networkResponse.apply { resultCode = response.code() }

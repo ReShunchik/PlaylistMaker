@@ -1,4 +1,4 @@
-package com.example.playlistmaker.domain.settings.api
+package com.example.playlistmaker.domain.sharing.api
 
 interface SharingRepository {
     fun shareApp()

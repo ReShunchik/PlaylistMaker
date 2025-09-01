@@ -6,11 +6,12 @@ import com.example.playlistmaker.domain.api.consumer.Consumer
 import com.example.playlistmaker.domain.api.consumer.ConsumerData
 import com.example.playlistmaker.domain.search.models.Resource
 import com.example.playlistmaker.domain.search.models.Track
-import java.util.concurrent.Executors
+import java.util.concurrent.ExecutorService
 
-class SearchInteractorImpl (private val repository: SearchRepository) : SearchInteractor {
-
-    private val executor = Executors.newCachedThreadPool()
+class SearchInteractorImpl (
+    private val repository: SearchRepository,
+    private val executor: ExecutorService
+) : SearchInteractor {
 
     override fun searchTracks(expression: String, consumer: Consumer<List<Track>>) {
         executor.execute {

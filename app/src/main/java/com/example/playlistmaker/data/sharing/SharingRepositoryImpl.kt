@@ -4,9 +4,12 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import com.example.playlistmaker.R
-import com.example.playlistmaker.domain.settings.api.SharingRepository
+import com.example.playlistmaker.domain.sharing.api.SharingRepository
 
-class SharingRepositoryImpl(private val context: Context): SharingRepository {
+class SharingRepositoryImpl(
+    private val context: Context
+): SharingRepository {
+
     override fun shareApp() {
         val shareIntent = Intent(Intent.ACTION_SEND).apply {
             type = "text/plain"
