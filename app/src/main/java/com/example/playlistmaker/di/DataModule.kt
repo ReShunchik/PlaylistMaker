@@ -46,7 +46,8 @@ val dataModule = module {
         PrefsStorageClient(
             prefs = get(),
             dataKey = THEME_SETTINGS_KEY,
-            type = object : TypeToken<ThemeSettingsDto>() {}.type
+            type = object : TypeToken<ThemeSettingsDto>() {}.type,
+            gson = get()
         )
     }
 
@@ -54,7 +55,8 @@ val dataModule = module {
         PrefsStorageClient(
             prefs = get(),
             dataKey = HISTORY_KEY,
-            type = object : TypeToken<ArrayList<SavedTrackDto>>() {}.type
+            type = object : TypeToken<ArrayList<SavedTrackDto>>() {}.type,
+            gson = get()
         )
     }
 

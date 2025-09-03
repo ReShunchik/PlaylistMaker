@@ -15,21 +15,21 @@ import org.koin.dsl.module
 
 val repositoryModule = module {
 
-    single<SearchHistoryRepository> {
+    factory<SearchHistoryRepository> {
         SearchHistoryRepositoryImpl(
             storageClient = get(named("HistoryStorageClient")))
     }
 
-    single<SearchRepository> {
+    factory<SearchRepository> {
         SearchRepositoryImpl(get())
     }
 
-    single<SettingsRepository> {
+    factory<SettingsRepository> {
         SettingsRepositoryImpl(
             storageClient = get(named("SettingsStorageClient")))
     }
 
-    single<SharingRepository> {
+    factory<SharingRepository> {
         SharingRepositoryImpl(androidContext())
     }
 

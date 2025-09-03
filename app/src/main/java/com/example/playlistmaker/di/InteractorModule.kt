@@ -14,14 +14,11 @@ import java.util.concurrent.Executors
 
 val interactorModule = module {
 
-    single<SettingsInteractor> {
-        val settingsInteractor = SettingsInteractorImpl(get())
-        settingsInteractor.applySavedTheme()
-
-        settingsInteractor
+    factory<SettingsInteractor> {
+        SettingsInteractorImpl(get())
     }
 
-    single<SearchHistoryInteractor> {
+    factory<SearchHistoryInteractor> {
         SearchHistoryInteractorImpl(get())
     }
 
@@ -29,11 +26,11 @@ val interactorModule = module {
         Executors.newCachedThreadPool()
     }
 
-    single<SearchInteractor> {
+    factory<SearchInteractor> {
         SearchInteractorImpl(get(), get())
     }
 
-    single<SharingInteractor>{
+    factory<SharingInteractor>{
         SharingInteractorImpl(get())
     }
 }
