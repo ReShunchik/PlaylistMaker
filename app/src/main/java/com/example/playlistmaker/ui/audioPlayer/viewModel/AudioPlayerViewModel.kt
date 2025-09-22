@@ -2,27 +2,22 @@ package com.example.playlistmaker.ui.audioPlayer.viewModel
 
 import android.media.MediaPlayer
 import android.os.Handler
-import android.os.Looper
 import android.os.SystemClock
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
 import java.text.SimpleDateFormat
-import java.util.Locale
 
 class AudioPlayerViewModel(
     private val mediaPlayer: MediaPlayer,
-    private val url: String
+    private val url: String,
+    private val handler: Handler,
+    private val dateFormat: SimpleDateFormat
 ) : ViewModel() {
 
     private val playerStateLiveData = MutableLiveData<PlayerState>(PlayerState.Default)
     fun observePlayerStare(): LiveData<PlayerState> = playerStateLiveData
 
-    private val handler = Handler(Looper.getMainLooper())
-    private val dateFormat by lazy { SimpleDateFormat("mm:ss", Locale.getDefault()) }
     private var currentTime = START_TIME
 
     private val timeRunnable = object : Runnable {
@@ -94,13 +89,6 @@ class AudioPlayerViewModel(
         private const val START_TIME = "00:00"
         private val TIME_UPDATE_TOKEN = Any()
         private const val TIME_UPDATE_DELAY = 300L
-
-        fun getFactory(url: String): ViewModelProvider.Factory = viewModelFactory {
-            initializer {
-                val mediaPlayer = MediaPlayer()
-                AudioPlayerViewModel(mediaPlayer, url)
-            }
-        }
     }
 
 

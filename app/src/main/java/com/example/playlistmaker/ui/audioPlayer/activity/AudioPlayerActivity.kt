@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.util.TypedValue
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
@@ -12,9 +11,12 @@ import com.example.playlistmaker.databinding.ActivityAudioPlayerBinding
 import com.example.playlistmaker.domain.search.models.Track
 import com.example.playlistmaker.ui.audioPlayer.viewModel.AudioPlayerViewModel
 import com.example.playlistmaker.ui.audioPlayer.viewModel.PlayerState
+import org.koin.androidx.viewmodel.ext.android.getViewModel
+import org.koin.core.component.KoinComponent
+import org.koin.core.parameter.parametersOf
 import java.time.OffsetDateTime
 
-class AudioPlayerActivity : AppCompatActivity() {
+class AudioPlayerActivity : AppCompatActivity(), KoinComponent {
 
     private lateinit var binding: ActivityAudioPlayerBinding
     private lateinit var viewModel: AudioPlayerViewModel
@@ -75,10 +77,7 @@ class AudioPlayerActivity : AppCompatActivity() {
                 binding.albumGroup.visibility = View.VISIBLE
                 binding.albumInfo.text = track.album
             }
-            viewModel = ViewModelProvider(
-                this,
-                AudioPlayerViewModel.getFactory(track.previewUrl)
-            ).get(AudioPlayerViewModel::class.java)
+            viewModel = getViewModel { parametersOf(track.previewUrl) }
         } else {
             finish()
         }

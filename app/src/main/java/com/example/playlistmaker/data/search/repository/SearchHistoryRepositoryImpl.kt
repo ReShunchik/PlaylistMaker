@@ -41,9 +41,4 @@ class SearchHistoryRepositoryImpl(
     override fun saveToHistory(tracks: ArrayList<SavedTrackDto>) {
         storageClient.storeData(tracks)
     }
-
-    companion object{
-        const val HISTORY = "history"
-    }
-
 }

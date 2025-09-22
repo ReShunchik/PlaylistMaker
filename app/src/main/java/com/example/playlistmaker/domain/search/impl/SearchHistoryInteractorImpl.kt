@@ -20,8 +20,4 @@ class SearchHistoryInteractorImpl(
     override fun getHistory(): ArrayList<Track> {
         return tracksHistoryRepository.getHistory()
     }
-
-    /*override fun saveToHistory(tracks: ArrayList<Track>) {
-        tracksHistoryRepository.saveToHistory(DomainMapper.map(tracks))
-    }*/
 }

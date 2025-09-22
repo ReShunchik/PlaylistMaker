@@ -6,7 +6,6 @@ import android.text.Editable
 import android.text.TextWatcher
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.playlistmaker.databinding.ActivitySearchBinding
 import com.example.playlistmaker.ui.search.adapters.TrackAdapter
@@ -14,12 +13,13 @@ import com.example.playlistmaker.domain.search.models.Track
 import com.example.playlistmaker.ui.audioPlayer.activity.AudioPlayerActivity
 import com.example.playlistmaker.ui.search.viewModel.SearchViewModel
 import com.example.playlistmaker.ui.search.viewModel.TracksState
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
 class SearchActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySearchBinding
-    private lateinit var viewModel: SearchViewModel
+    private val viewModel by viewModel<SearchViewModel>()
 
     private var searchText = ""
     private lateinit var trackAdapter: TrackAdapter
@@ -60,10 +60,6 @@ class SearchActivity : AppCompatActivity() {
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 binding.clearButton.isVisible = clearButtonVisibility(s)
-                /*if (binding.searchInput.hasFocus() && s?.isEmpty() == true) {
-                    showSearchHistory()
-                } else {
-                    binding.searchHistory.isVisible = false*/
                 viewModel?.searchDebounce(
                     changedText = s?.toString() ?: ""
                 )
@@ -75,12 +71,6 @@ class SearchActivity : AppCompatActivity() {
         }
 
         binding.searchInput.addTextChangedListener(searchTextWatcher)
-
-        /*binding.searchInput.setOnFocusChangeListener{view, hasFocus ->
-            if(hasFocus && binding.searchInput.text.isEmpty()){
-                showSearchHistory()
-            }
-        }*/
 
         binding.updateRequest.setOnClickListener{
             viewModel?.searchRequest()
@@ -103,10 +93,6 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun init(){
-        viewModel = ViewModelProvider(
-            this,
-            SearchViewModel.getFactory()
-        ).get(SearchViewModel::class.java)
         trackAdapter = TrackAdapter{ track ->
             viewModel.freshHistory(track)
             val intent = Intent(this, AudioPlayerActivity::class.java)
