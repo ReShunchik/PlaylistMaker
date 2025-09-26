@@ -32,6 +32,11 @@ class MediaLibraryActivity : AppCompatActivity() {
         tabMediator.attach()
     }
 
+
+    fun String.capitalizeFirstLowerRest(): String {
+        return this.lowercase().replaceFirstChar { it.uppercase() }
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         tabMediator.detach()

@@ -38,12 +38,13 @@
         android:background="@color/white"
         app:tabBackground="?attr/bgColor"
         app:tabTextColor="?attr/colorPrimary"
-        app:tabIndicatorColor="?attr/colorPrimary" />
+        app:tabIndicatorColor="?attr/colorPrimary"
+        app:tabTextAppearance="@style/MyTabTextAppearance"/>
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/viewPager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="2"/>
+        android:layout_weight="2" />
 
 </LinearLayout>
