@@ -5,6 +5,7 @@
     <dimen name="text_size_20sp">20sp</dimen>
     <dimen name="text_size_24sp">24sp</dimen>
 
+    <dimen name="dimen_0dp">0dp</dimen>
     <dimen name="dimen_4dp">4dp</dimen>
     <dimen name="dimen_8dp">8dp</dimen>
     <dimen name="dimen_12dp">12dp</dimen>
@@ -21,6 +22,7 @@
     <dimen name="dimen_84dp">84dp</dimen>
     <dimen name="dimen_100dp">100dp</dimen>
     <dimen name="dimen_140dp">140dp</dimen>
+    <dimen name="dimen_312dp">312dp</dimen>
     <dimen name="text_bottom_panel_margin">4dp</dimen>
 
     <dimen name="button_width">328dp</dimen>

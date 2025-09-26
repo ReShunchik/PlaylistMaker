@@ -113,4 +113,8 @@
         <item name="android:ellipsize">end</item>
     </style>
 
+    <style name="MyTabTextAppearance" parent="TextAppearance.Design.Tab">
+        <item name="textAllCaps">false</item>
+    </style>
+
 </resources>
