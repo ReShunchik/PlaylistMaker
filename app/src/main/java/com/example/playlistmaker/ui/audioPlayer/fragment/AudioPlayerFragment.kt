@@ -5,7 +5,6 @@ import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -23,7 +22,7 @@ import java.time.OffsetDateTime
 
 class AudioPlayerFragment : Fragment(), KoinComponent {
 
-    private lateinit var _binding: FragmentAudioPlayerBinding
+    private var _binding: FragmentAudioPlayerBinding? = null
     private val binding get() = _binding!!
 
     private lateinit var viewModel: AudioPlayerViewModel
@@ -62,6 +61,7 @@ class AudioPlayerFragment : Fragment(), KoinComponent {
                 is PlayerState.Prepared -> showPrepared()
                 is PlayerState.Finished -> {
                     binding.currentTime.setText(TIME_DEFAULT)
+                    showPaused()
                 }
             }
         }
@@ -126,6 +126,11 @@ class AudioPlayerFragment : Fragment(), KoinComponent {
     override fun onPause() {
         super.onPause()
         viewModel.pausePlayer()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     companion object{

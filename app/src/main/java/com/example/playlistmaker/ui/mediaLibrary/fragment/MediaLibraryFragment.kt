@@ -12,7 +12,7 @@ import com.google.android.material.tabs.TabLayoutMediator
 
 class MediaLibraryFragment : Fragment() {
 
-    private lateinit var _binding: FragmentMediaLibraryBinding
+    private var _binding: FragmentMediaLibraryBinding? = null
     private val binding get() = _binding!!
     private lateinit var tabMediator: TabLayoutMediator
 
@@ -36,8 +36,9 @@ class MediaLibraryFragment : Fragment() {
         tabMediator.attach()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onDestroyView() {
+        super.onDestroyView()
         tabMediator.detach()
+        _binding = null
     }
 }

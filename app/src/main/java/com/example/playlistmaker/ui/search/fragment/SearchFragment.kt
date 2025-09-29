@@ -24,7 +24,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class SearchFragment: Fragment() {
 
 
-    private lateinit var _binding: FragmentSearchBinding
+    private var _binding: FragmentSearchBinding? = null
     private val binding get() = _binding!!
     private val viewModel by viewModel<SearchViewModel>()
 
@@ -105,9 +105,6 @@ class SearchFragment: Fragment() {
                 R.id.action_searchFragment_to_audioPlayerFragment,
                 AudioPlayerFragment.createArgs(track)
             )
-            //val intent = Intent(this, AudioPlayerActivity::class.java)
-            //intent.putExtra(TRACK, track)
-            //startActivity(intent)
         }
         initHistory()
     }
@@ -180,6 +177,7 @@ class SearchFragment: Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         searchTextWatcher?.let { binding.searchInput.removeTextChangedListener(it) }
+        _binding = null
     }
 
     companion object{

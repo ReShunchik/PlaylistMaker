@@ -24,4 +24,9 @@ class FavouriteFragment: Fragment() {
         binding.addPlaylist.visibility = View.INVISIBLE
         binding.info.text = requireContext().getString(R.string.no_favourite)
     }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
 }

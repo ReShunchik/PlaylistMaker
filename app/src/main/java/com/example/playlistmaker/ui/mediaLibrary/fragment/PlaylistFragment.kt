@@ -25,4 +25,9 @@ class PlaylistFragment: Fragment() {
         binding.addPlaylist.isVisible = true
         binding.info.text = requireContext().getString(R.string.no_playlist)
     }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
 }

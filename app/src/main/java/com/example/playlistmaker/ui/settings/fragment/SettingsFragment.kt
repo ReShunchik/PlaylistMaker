@@ -11,7 +11,7 @@ import com.example.playlistmaker.databinding.FragmentSettingsBinding
 
 class SettingsFragment: Fragment() {
 
-    private lateinit var _binding: FragmentSettingsBinding
+    private var _binding: FragmentSettingsBinding? = null
     private val binding get() = _binding!!
     private val viewModel by viewModel<SettingsViewModel>()
 
@@ -44,5 +44,10 @@ class SettingsFragment: Fragment() {
         binding.terms.setOnClickListener{
             viewModel.openTerms()
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }
