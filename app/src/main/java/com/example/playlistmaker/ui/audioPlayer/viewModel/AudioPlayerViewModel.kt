@@ -43,6 +43,7 @@ class AudioPlayerViewModel(
     }
 
     private fun preparePlayer() {
+        mediaPlayer.reset()
         mediaPlayer.setDataSource(url)
         mediaPlayer.prepareAsync()
         mediaPlayer.setOnPreparedListener {

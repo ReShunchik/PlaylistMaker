@@ -19,7 +19,7 @@ object DataMapper {
                 it.genre,
                 it.album,
                 it.year,
-                it.previewUrl)
+                previewUrl = it.previewUrl ?: "")
         }
     }
 
