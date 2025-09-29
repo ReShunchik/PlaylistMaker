@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <attr name="bgMainColor" format="color"/>
+    <attr name="bottomActiveColor" format="color"/>
     <attr name="bgColor" format="color"/>
     <attr name="searchFieldColor" format="color"/>
     <attr name="iconColor" format="color"/>

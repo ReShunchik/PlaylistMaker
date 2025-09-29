@@ -1,24 +1,31 @@
-package com.example.playlistmaker.ui.search.activity
+package com.example.playlistmaker.ui.search.fragment
 
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import androidx.appcompat.app.AppCompatActivity
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.playlistmaker.databinding.ActivitySearchBinding
-import com.example.playlistmaker.ui.search.adapters.TrackAdapter
+import com.example.playlistmaker.R
+import com.example.playlistmaker.databinding.FragmentSearchBinding
 import com.example.playlistmaker.domain.search.models.Track
-import com.example.playlistmaker.ui.audioPlayer.activity.AudioPlayerActivity
+import com.example.playlistmaker.ui.audioPlayer.fragment.AudioPlayerFragment
+import com.example.playlistmaker.ui.search.adapters.TrackAdapter
 import com.example.playlistmaker.ui.search.viewModel.SearchViewModel
 import com.example.playlistmaker.ui.search.viewModel.TracksState
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
+class SearchFragment: Fragment() {
 
-class SearchActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivitySearchBinding
+    private lateinit var _binding: FragmentSearchBinding
+    private val binding get() = _binding!!
     private val viewModel by viewModel<SearchViewModel>()
 
     private var searchText = ""
@@ -27,14 +34,17 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var searchTextWatcher: TextWatcher
 
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        binding = ActivitySearchBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
+                              savedInstanceState: Bundle?): View? {
+        _binding = FragmentSearchBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         init()
 
-        binding.trackList.layoutManager = LinearLayoutManager(this)
+        binding.trackList.layoutManager = LinearLayoutManager(requireContext())
         binding.trackList.adapter = trackAdapter
 
 
@@ -50,11 +60,7 @@ class SearchActivity : AppCompatActivity() {
             binding.searchHistory.isVisible = false
         }
 
-        binding.buttonBack.setOnClickListener{
-            finish()
-        }
-
-        searchTextWatcher = object : TextWatcher{
+        searchTextWatcher = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
             }
 
@@ -76,7 +82,7 @@ class SearchActivity : AppCompatActivity() {
             viewModel?.searchRequest()
         }
 
-        viewModel.observeTrackState().observe(this){
+        viewModel.observeTrackState().observe(viewLifecycleOwner){
             when (it) {
                 is TracksState.Content -> showContent(it.tracks)
                 is TracksState.Error -> showError()
@@ -95,9 +101,13 @@ class SearchActivity : AppCompatActivity() {
     private fun init(){
         trackAdapter = TrackAdapter{ track ->
             viewModel.freshHistory(track)
-            val intent = Intent(this, AudioPlayerActivity::class.java)
-            intent.putExtra(TRACK, track)
-            startActivity(intent)
+            findNavController().navigate(
+                R.id.action_searchFragment_to_audioPlayerFragment,
+                AudioPlayerFragment.createArgs(track)
+            )
+            //val intent = Intent(this, AudioPlayerActivity::class.java)
+            //intent.putExtra(TRACK, track)
+            //startActivity(intent)
         }
         initHistory()
     }
@@ -112,7 +122,7 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun initHistory(){
-        binding.historyTrackList.layoutManager = LinearLayoutManager(this)
+        binding.historyTrackList.layoutManager = LinearLayoutManager(requireContext())
         binding.historyTrackList.adapter = trackAdapter
         binding.clearHistory.setOnClickListener{
             trackAdapter.clearTracks()
@@ -167,8 +177,8 @@ class SearchActivity : AppCompatActivity() {
     }
 
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onDestroyView() {
+        super.onDestroyView()
         searchTextWatcher?.let { binding.searchInput.removeTextChangedListener(it) }
     }
 

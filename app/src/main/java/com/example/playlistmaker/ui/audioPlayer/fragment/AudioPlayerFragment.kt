@@ -1,13 +1,18 @@
-package com.example.playlistmaker.ui.audioPlayer.activity
+package com.example.playlistmaker.ui.audioPlayer.fragment
 
 import android.os.Bundle
 import android.util.TypedValue
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.os.bundleOf
+import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
-import com.example.playlistmaker.databinding.ActivityAudioPlayerBinding
+import com.example.playlistmaker.databinding.FragmentAudioPlayerBinding
 import com.example.playlistmaker.domain.search.models.Track
 import com.example.playlistmaker.ui.audioPlayer.viewModel.AudioPlayerViewModel
 import com.example.playlistmaker.ui.audioPlayer.viewModel.PlayerState
@@ -16,28 +21,37 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.parameter.parametersOf
 import java.time.OffsetDateTime
 
-class AudioPlayerActivity : AppCompatActivity(), KoinComponent {
+class AudioPlayerFragment : Fragment(), KoinComponent {
 
-    private lateinit var binding: ActivityAudioPlayerBinding
+    private lateinit var _binding: FragmentAudioPlayerBinding
+    private val binding get() = _binding!!
+
     private lateinit var viewModel: AudioPlayerViewModel
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        binding = ActivityAudioPlayerBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        _binding = FragmentAudioPlayerBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         setInfo()
 
         binding.buttonBack.setOnClickListener{
-            finish()
+            findNavController().navigateUp()
         }
 
         binding.playerButton.setOnClickListener{
             viewModel.playbackControl()
         }
 
-        viewModel.observePlayerStare().observe(this){
+        viewModel.observePlayerStare().observe(viewLifecycleOwner){
             when(it){
                 is PlayerState.Playing -> {
                     showPlaying()
@@ -53,8 +67,9 @@ class AudioPlayerActivity : AppCompatActivity(), KoinComponent {
         }
     }
 
+
     private fun setInfo(){
-        val track: Track? = intent.getSerializableExtra(TRACK) as Track
+        val track: Track? = requireArguments().get(TRACK) as Track
         if (track != null){
             val atworkUrl512 = track.artworkUrl100.replace("100x100", "512x512")
             Glide.with(this)
@@ -79,7 +94,7 @@ class AudioPlayerActivity : AppCompatActivity(), KoinComponent {
             }
             viewModel = getViewModel { parametersOf(track.previewUrl) }
         } else {
-            finish()
+            findNavController().navigateUp()
         }
     }
 
@@ -116,5 +131,8 @@ class AudioPlayerActivity : AppCompatActivity(), KoinComponent {
     companion object{
         private const val TRACK = "track"
         private val TIME_DEFAULT = R.string.start_track_time
+
+        fun createArgs(track: Track): Bundle =
+            bundleOf(TRACK to track)
     }
 }
