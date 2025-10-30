@@ -4,7 +4,7 @@
         <item name="colorPrimary">@color/white</item>
         <item name="searchFieldColor">@color/white</item>
         <item name="iconColor">@color/black</item>
-        <item name="bgMainColor">@color/black_ligth</item>
+        <item name="bottomActiveColor">@color/blue</item>
         <item name="bgColor">@color/black_ligth</item>
         <item name="trackNameColor">@color/white</item>
         <item name="trackArtAndTimeColor">@color/white</item>

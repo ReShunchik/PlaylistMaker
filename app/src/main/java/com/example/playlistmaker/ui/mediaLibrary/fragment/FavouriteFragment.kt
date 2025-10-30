@@ -6,16 +6,16 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.example.playlistmaker.R
-import com.example.playlistmaker.databinding.FragmentMediaLibraryBinding
+import com.example.playlistmaker.databinding.FragmentMediaLibraryContentBinding
 
 class FavouriteFragment: Fragment() {
 
-    private var _binding: FragmentMediaLibraryBinding? = null
+    private var _binding: FragmentMediaLibraryContentBinding? = null
     private val binding get() = _binding!!
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        _binding = FragmentMediaLibraryBinding.inflate(inflater, container, false)
+        _binding = FragmentMediaLibraryContentBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -23,5 +23,10 @@ class FavouriteFragment: Fragment() {
         super.onViewCreated(view, savedInstanceState)
         binding.addPlaylist.visibility = View.INVISIBLE
         binding.info.text = requireContext().getString(R.string.no_favourite)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }
