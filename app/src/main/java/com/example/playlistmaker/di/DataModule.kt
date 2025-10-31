@@ -39,7 +39,7 @@ val dataModule = module {
     factory { Gson() }
 
     single<NetworkClient> {
-        RetrofitNetworkClient(get())
+        RetrofitNetworkClient(get(), androidContext())
     }
 
     single<StorageClient<ThemeSettingsDto>>(named("SettingsStorageClient")) {

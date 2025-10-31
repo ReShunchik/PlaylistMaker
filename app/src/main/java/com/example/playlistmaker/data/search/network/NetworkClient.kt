@@ -5,6 +5,6 @@ import com.example.playlistmaker.data.dto.TracksSearchRequest
 
 interface NetworkClient {
 
-    fun doRequest(searchRequest: TracksSearchRequest): Response
+    suspend fun doRequest(searchRequest: Any): Response
 
 }
