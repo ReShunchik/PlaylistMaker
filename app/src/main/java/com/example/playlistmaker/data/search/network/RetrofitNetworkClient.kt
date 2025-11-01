@@ -22,15 +22,12 @@ class RetrofitNetworkClient(
             return Response().apply { resultCode = 400 }
         }
 
-        return withContext(Dispatchers.IO) {
-            try {
+        return try {
                 val networkResponse = api.search(searchRequest.request)
                 networkResponse.apply { resultCode = 200 }
             } catch (ex: Exception){
                 Response().apply { resultCode = 500 }
             }
-        }
-
     }
 
     private fun isConnected(): Boolean {

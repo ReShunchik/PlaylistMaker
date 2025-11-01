@@ -9,7 +9,6 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
-import java.util.Locale
 
 class AudioPlayerViewModel(
     private val mediaPlayer: MediaPlayer,
@@ -19,7 +18,7 @@ class AudioPlayerViewModel(
 
     private var timerJob: Job? = null
 
-    private val playerStateLiveData = MutableLiveData<PlayerState>(PlayerState.Default())
+    private val playerStateLiveData = MutableLiveData<PlayerState>(PlayerState.Default(TIME_DEFAULT))
     fun observePlayerStare(): LiveData<PlayerState> = playerStateLiveData
 
     init {
@@ -30,11 +29,11 @@ class AudioPlayerViewModel(
         mediaPlayer.setDataSource(url)
         mediaPlayer.prepareAsync()
         mediaPlayer.setOnPreparedListener {
-            playerStateLiveData.postValue(PlayerState.Prepared())
+            playerStateLiveData.postValue(PlayerState.Prepared(TIME_DEFAULT))
         }
         mediaPlayer.setOnCompletionListener {
             timerJob?.cancel()
-            playerStateLiveData.postValue(PlayerState.Prepared())
+            playerStateLiveData.postValue(PlayerState.Prepared(TIME_DEFAULT))
         }
     }
 
@@ -74,10 +73,11 @@ class AudioPlayerViewModel(
     private fun releasePlayer() {
         mediaPlayer.stop()
         mediaPlayer.release()
-        playerStateLiveData.value = PlayerState.Default()
+        playerStateLiveData.value = PlayerState.Default(TIME_DEFAULT)
     }
 
     private fun startTimer() {
+        timerJob?.cancel()
         timerJob = viewModelScope.launch {
             while (mediaPlayer.isPlaying) {
                 delay(TIME_UPDATE_DELAY)
@@ -91,7 +91,7 @@ class AudioPlayerViewModel(
     }
 
     companion object {
-        private const val START_TIME = "00:00"
+        private const val TIME_DEFAULT = "00:00"
         private const val TIME_UPDATE_DELAY = 300L
     }
 
