@@ -47,22 +47,16 @@ class AudioPlayerFragment : Fragment(), KoinComponent {
         }
 
         binding.playerButton.setOnClickListener{
-            viewModel.playbackControl()
+            viewModel.onPlayButtonClicked()
         }
 
         viewModel.observePlayerStare().observe(viewLifecycleOwner){
-            when(it){
-                is PlayerState.Playing -> {
-                    showPlaying()
-                    binding.currentTime.setText(it.currentTime)
-                }
-                is PlayerState.Paused -> showPaused()
-                is PlayerState.Default -> showDefault()
-                is PlayerState.Prepared -> showPrepared()
-                is PlayerState.Finished -> {
-                    binding.currentTime.setText(TIME_DEFAULT)
-                    showPaused()
-                }
+            binding.playerButton.isEnabled = it.isPlayButtonEnabled
+            binding.currentTime.text = it.progress
+            if(it.isPlaying){
+                showPlaying()
+            } else {
+                showPaused()
             }
         }
     }
@@ -113,19 +107,9 @@ class AudioPlayerFragment : Fragment(), KoinComponent {
         binding.playerButton.setImageResource(R.drawable.ic_play_84)
     }
 
-    private fun showPrepared(){
-        binding.playerButton.isEnabled = true
-        showPaused()
-    }
-
-    private fun showDefault(){
-        binding.playerButton.setImageResource(R.drawable.ic_play_84)
-        binding.playerButton.isEnabled = false
-    }
-
     override fun onPause() {
         super.onPause()
-        viewModel.pausePlayer()
+        viewModel.onPause()
     }
 
     override fun onDestroyView() {
@@ -135,7 +119,6 @@ class AudioPlayerFragment : Fragment(), KoinComponent {
 
     companion object{
         private const val TRACK = "track"
-        private val TIME_DEFAULT = R.string.start_track_time
 
         fun createArgs(track: Track): Bundle =
             bundleOf(TRACK to track)

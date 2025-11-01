@@ -1,27 +1,30 @@
 package com.example.playlistmaker.ui.search.viewModel
 
-
-import android.os.Handler
-
 import android.os.SystemClock
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.domain.api.consumer.Consumer
 import com.example.playlistmaker.domain.api.consumer.ConsumerData
 import com.example.playlistmaker.domain.search.models.Track
 import com.example.playlistmaker.domain.search.api.SearchHistoryInteractor
 import com.example.playlistmaker.domain.search.api.SearchInteractor
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class SearchViewModel(
     private val searchHistoryInteractor: SearchHistoryInteractor,
     private val searchInteractor: SearchInteractor,
-    private val handler: Handler
 ): ViewModel() {
 
 
 
     private var latestSearchText = SEARCH_DEF
+
+    private var searchJob: Job? = null
 
     private val trackStateLiveData = MutableLiveData<TracksState>()
     fun observeTrackState(): LiveData<TracksState> = trackStateLiveData
@@ -30,41 +33,35 @@ class SearchViewModel(
         val searchText = latestSearchText
         if(searchText.isNotEmpty()){
             trackStateLiveData.postValue(TracksState.Loading)
-        }
-        searchInteractor.searchTracks(
-            searchText,
-            consumer = object : Consumer<List<Track>> {
 
-                override fun consume(data: ConsumerData<List<Track>>) {
-                    when (data) {
-                        is ConsumerData.Error -> {
-                            when (data.message) {
-                                CONNECTION_ERROR -> {
-                                    trackStateLiveData.postValue(TracksState.Error(data.message))
-                                }
-
-                                NO_RESULTS -> {
-                                    val history: ArrayList<Track>?
-                                    if(searchText.isNullOrEmpty()){
-                                        history = searchHistoryInteractor.getHistory()
-                                    } else {
-                                        history = null
-                                    }
-                                    trackStateLiveData.postValue(TracksState.Empty(
-                                        data.message,
-                                        history))
-                                }
-                            }
-                        }
-
-                        is ConsumerData.Data -> {
-                            trackStateLiveData.postValue(TracksState.Content(data.value as ArrayList<Track>))
-                        }
+            viewModelScope.launch {
+                searchInteractor
+                    .searchTracks(searchText)
+                    .collect{
+                        pair -> proccesResult(pair.first, pair.second)
                     }
-
-                }
             }
-        )
+        }
+    }
+
+    private fun proccesResult(tracks: List<Track>?, message: String?){
+        if (message != null){
+            trackStateLiveData.postValue(TracksState.Error(message))
+        } else {
+            if (tracks.isNullOrEmpty()){
+                val history: ArrayList<Track>?
+                if(latestSearchText.isNullOrEmpty()){
+                    history = searchHistoryInteractor.getHistory()
+                } else {
+                    history = null
+                }
+                trackStateLiveData.postValue(TracksState.Empty(
+                    message ?: "",
+                    history))
+            } else {
+                trackStateLiveData.postValue(TracksState.Content(tracks as ArrayList<Track>))
+            }
+        }
     }
 
     fun clearHistory(){
@@ -81,29 +78,17 @@ class SearchViewModel(
         }
 
         latestSearchText = changedText
-        handler.removeCallbacksAndMessages(SEARCH_REQUEST_TOKEN)
 
-        val searchRunnable = Runnable { searchRequest() }
-
-        val postTime = SystemClock.uptimeMillis() + SEARCH_DEBOUNCE_DELAY
-        handler.postAtTime(
-            searchRunnable,
-            SEARCH_REQUEST_TOKEN,
-            postTime,
-        )
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-        handler.removeCallbacksAndMessages(SEARCH_REQUEST_TOKEN)
+        searchJob?.cancel()
+        searchJob = viewModelScope.launch {
+            delay(SEARCH_DEBOUNCE_DELAY)
+            searchRequest()
+        }
     }
 
     companion object {
         private const val SEARCH_DEBOUNCE_DELAY = 2000L
-        private val SEARCH_REQUEST_TOKEN = Any()
         private const val SEARCH_DEF = ""
-        private const val CONNECTION_ERROR = "Connection Error"
-        private const val NO_RESULTS = "No results"
     }
 
 }

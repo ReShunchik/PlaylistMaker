@@ -9,7 +9,6 @@ import com.example.playlistmaker.domain.settings.impl.SettingsInteractorImpl
 import com.example.playlistmaker.domain.sharing.api.SharingInteractor
 import com.example.playlistmaker.domain.sharing.impl.SharingInteractorImpl
 import org.koin.dsl.module
-import java.util.concurrent.Executors
 
 
 val interactorModule = module {
@@ -22,12 +21,8 @@ val interactorModule = module {
         SearchHistoryInteractorImpl(get())
     }
 
-    single {
-        Executors.newCachedThreadPool()
-    }
-
     factory<SearchInteractor> {
-        SearchInteractorImpl(get(), get())
+        SearchInteractorImpl(get())
     }
 
     factory<SharingInteractor>{

@@ -1,15 +1,14 @@
 package com.example.playlistmaker.ui.search.fragment
 
-import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.playlistmaker.R
@@ -19,6 +18,7 @@ import com.example.playlistmaker.ui.audioPlayer.fragment.AudioPlayerFragment
 import com.example.playlistmaker.ui.search.adapters.TrackAdapter
 import com.example.playlistmaker.ui.search.viewModel.SearchViewModel
 import com.example.playlistmaker.ui.search.viewModel.TracksState
+import com.example.playlistmaker.utils.debounce
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SearchFragment: Fragment() {
@@ -99,12 +99,16 @@ class SearchFragment: Fragment() {
     }
 
     private fun init(){
-        trackAdapter = TrackAdapter{ track ->
-            viewModel.freshHistory(track)
+        val onTrackClickDebounce = debounce<Track>(CLICK_DEBOUNCE_DELAY, viewLifecycleOwner.lifecycleScope, false) {
+            track ->
             findNavController().navigate(
                 R.id.action_searchFragment_to_audioPlayerFragment,
                 AudioPlayerFragment.createArgs(track)
             )
+        }
+        trackAdapter = TrackAdapter{
+            track ->
+            onTrackClickDebounce(track)
         }
         initHistory()
     }
@@ -182,5 +186,6 @@ class SearchFragment: Fragment() {
 
     companion object{
         const val TRACK = "track"
+        const val CLICK_DEBOUNCE_DELAY = 300L
     }
 }

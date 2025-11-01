@@ -42,6 +42,7 @@ android {
 }
 
 dependencies {
+    implementation(libs.kotlinx.coroutines.android)
     implementation(libs.androidx.navigation.fragment)
     implementation(libs.androidx.navigation)
     implementation(libs.androidx.fragment)

@@ -21,12 +21,8 @@ val viewModelModule = module {
         )
     }
 
-    single {
-        Handler(Looper.getMainLooper())
-    }
-
     viewModel<SearchViewModel> {
-        SearchViewModel(get(), get(), get())
+        SearchViewModel(get(), get())
     }
 
     single {
@@ -39,6 +35,6 @@ val viewModelModule = module {
 
     viewModel<AudioPlayerViewModel> {
         (url: String) ->
-            AudioPlayerViewModel(get(), url, get(), get())
+            AudioPlayerViewModel(get(), url, get())
     }
 }
