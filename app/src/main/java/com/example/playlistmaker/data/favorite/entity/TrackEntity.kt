@@ -1,6 +1,11 @@
-package com.example.playlistmaker.data.dto
+package com.example.playlistmaker.data.favorite.entity
 
-data class SavedTrackDto(
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+
+@Entity(tableName = "favorite_table")
+data class TrackEntity(
+    @PrimaryKey
     val id: Long,
     val trackName: String,
     val artistName: String,
@@ -10,6 +15,5 @@ data class SavedTrackDto(
     val genre: String,
     val album: String?,
     val year: String?,
-    val previewUrl: String
-) {
-}
+    val previewUrl: String = ""
+)

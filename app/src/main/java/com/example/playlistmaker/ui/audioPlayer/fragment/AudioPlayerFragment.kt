@@ -14,7 +14,7 @@ import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentAudioPlayerBinding
 import com.example.playlistmaker.domain.search.models.Track
 import com.example.playlistmaker.ui.audioPlayer.viewModel.AudioPlayerViewModel
-import com.example.playlistmaker.ui.audioPlayer.viewModel.PlayerState
+import com.example.playlistmaker.ui.audioPlayer.viewModel.TrackState
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 import org.koin.core.component.KoinComponent
 import org.koin.core.parameter.parametersOf
@@ -26,6 +26,8 @@ class AudioPlayerFragment : Fragment(), KoinComponent {
     private val binding get() = _binding!!
 
     private lateinit var viewModel: AudioPlayerViewModel
+
+    private lateinit var track: Track
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -50,7 +52,23 @@ class AudioPlayerFragment : Fragment(), KoinComponent {
             viewModel.onPlayButtonClicked()
         }
 
-        viewModel.observePlayerStare().observe(viewLifecycleOwner){
+        binding.favoriteButton.setOnClickListener{
+            if(track != null){
+                when(viewModel.getCurrentTrackState()){
+                    is TrackState.IsFavorite -> viewModel.deleteTrackFromFavorite(track!!)
+                    is TrackState.NotFavorite -> viewModel.addToFavorite(track!!)
+                }
+            }
+        }
+
+        viewModel.observeTrackStateLiveData().observe(viewLifecycleOwner){
+            when(it){
+                is TrackState.IsFavorite -> binding.favoriteButton.setImageResource(R.drawable.ic_like_24)
+                is TrackState.NotFavorite -> binding.favoriteButton.setImageResource(R.drawable.ic_not_like_24)
+            }
+        }
+
+        viewModel.observePlayerState().observe(viewLifecycleOwner){
             binding.playerButton.isEnabled = it.isPlayButtonEnabled
             binding.currentTime.text = it.progress
             if(it.isPlaying){
@@ -63,9 +81,9 @@ class AudioPlayerFragment : Fragment(), KoinComponent {
 
 
     private fun setInfo(){
-        val track: Track? = requireArguments().get(TRACK) as Track
+        track = requireArguments().get(TRACK) as Track
         if (track != null){
-            val atworkUrl512 = track.artworkUrl100.replace("100x100", "512x512")
+            val atworkUrl512 = track?.artworkUrl100?.replace("100x100", "512x512")
             Glide.with(this)
                 .load(atworkUrl512)
                 .placeholder(R.drawable.track_placeholder_512)
@@ -73,20 +91,21 @@ class AudioPlayerFragment : Fragment(), KoinComponent {
                 .transform(RoundedCorners(dpToPx(8f)))
                 .into(binding.atwork)
 
-            binding.trackName.text = track.trackName
-            binding.trackArtist.text = track.artistName
-            binding.durationInfo.text = track.trackTime
-            binding.genreInfo.text = track.genre
-            binding.countryInfo.text = track.country
-            if(track.year != null){
+            binding.trackName.text = track?.trackName
+            binding.trackArtist.text = track?.artistName
+            binding.durationInfo.text = track?.trackTime
+            binding.genreInfo.text = track?.genre
+            binding.countryInfo.text = track?.country
+            if(track?.year != null){
                 binding.yearGroup.visibility = View.VISIBLE
-                binding.yearInfo.text = OffsetDateTime.parse(track.year).year.toString()
+                binding.yearInfo.text = OffsetDateTime.parse(track?.year).year.toString()
             }
-            if(track.album != null){
+            if(track?.album != null){
                 binding.albumGroup.visibility = View.VISIBLE
-                binding.albumInfo.text = track.album
+                binding.albumInfo.text = track?.album
             }
-            viewModel = getViewModel { parametersOf(track.previewUrl) }
+            viewModel = getViewModel { parametersOf(track?.previewUrl) }
+            viewModel.checkIsFavoriteTrack(track.id)
         } else {
             findNavController().navigateUp()
         }

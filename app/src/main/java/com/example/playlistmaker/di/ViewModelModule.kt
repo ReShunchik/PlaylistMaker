@@ -1,9 +1,8 @@
 package com.example.playlistmaker.di
 
 import android.media.MediaPlayer
-import android.os.Handler
-import android.os.Looper
 import com.example.playlistmaker.ui.audioPlayer.viewModel.AudioPlayerViewModel
+import com.example.playlistmaker.ui.mediaLibrary.viewModel.FavoriteViewModel
 import com.example.playlistmaker.ui.search.viewModel.SearchViewModel
 import com.example.playlistmaker.ui.settings.viewModel.SettingsViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -35,6 +34,10 @@ val viewModelModule = module {
 
     viewModel<AudioPlayerViewModel> {
         (url: String) ->
-            AudioPlayerViewModel(get(), url, get())
+            AudioPlayerViewModel(get(), url, get(), get())
+    }
+
+    viewModel<FavoriteViewModel> {
+        FavoriteViewModel(get(), get())
     }
 }

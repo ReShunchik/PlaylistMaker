@@ -11,7 +11,9 @@ object DataMapper {
 
     fun map(results: List<TrackDto>): List<Track> {
         return results.map {
-            Track(it.trackName,
+            Track(
+                it.id,
+                it.trackName,
                 it.artistName,
                 getMmSS(it.trackTime),
                 it.artworkUrl100,
