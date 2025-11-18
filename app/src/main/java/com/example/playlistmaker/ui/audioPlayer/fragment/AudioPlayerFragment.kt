@@ -54,9 +54,10 @@ class AudioPlayerFragment : Fragment(), KoinComponent {
 
         binding.favoriteButton.setOnClickListener{
             if(track != null){
+                val track = track
                 when(viewModel.getCurrentTrackState()){
-                    is TrackState.IsFavorite -> viewModel.deleteTrackFromFavorite(track!!)
-                    is TrackState.NotFavorite -> viewModel.addToFavorite(track!!)
+                    is TrackState.IsFavorite -> viewModel.deleteTrackFromFavorite(track)
+                    is TrackState.NotFavorite -> viewModel.addToFavorite(track)
                 }
             }
         }

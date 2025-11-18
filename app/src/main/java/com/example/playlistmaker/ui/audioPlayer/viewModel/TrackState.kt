@@ -1,6 +1,6 @@
 package com.example.playlistmaker.ui.audioPlayer.viewModel
 
-interface TrackState {
+sealed interface TrackState {
 
     object IsFavorite: TrackState
 

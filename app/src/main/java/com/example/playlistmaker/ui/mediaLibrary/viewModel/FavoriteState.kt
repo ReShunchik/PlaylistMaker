@@ -2,7 +2,7 @@ package com.example.playlistmaker.ui.mediaLibrary.viewModel
 
 import com.example.playlistmaker.domain.search.models.Track
 
-interface FavoriteState {
+sealed interface FavoriteState {
 
     data class Content(
         val tracks: List<Track>

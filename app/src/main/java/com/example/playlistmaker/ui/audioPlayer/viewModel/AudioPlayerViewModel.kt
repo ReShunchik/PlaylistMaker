@@ -27,8 +27,8 @@ class AudioPlayerViewModel(
     private val trackStateLivaData = MutableLiveData<TrackState>()
     fun observeTrackStateLiveData(): LiveData<TrackState> = trackStateLivaData
 
-    fun getCurrentTrackState(): TrackState?{
-        return trackStateLivaData.value
+    fun getCurrentTrackState(): TrackState{
+        return trackStateLivaData.value ?: TrackState.NotFavorite
     }
 
     init {

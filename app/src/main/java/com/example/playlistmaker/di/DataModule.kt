@@ -65,7 +65,7 @@ val dataModule = module {
 
     single {
         Room.databaseBuilder(get(), FavoriteDatabase::class.java, "database.db")
-            .build()
+            .build().trackDao()
     }
 
 }
