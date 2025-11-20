@@ -8,7 +8,7 @@ object DomainMapper {
     fun map(results: ArrayList<Track>): ArrayList<SavedTrackDto> {
         return ArrayList(results.map {
             SavedTrackDto(
-                it.id,
+                it.trackId,
                 it.trackName,
                 it.artistName,
                 it.trackTime,
@@ -24,7 +24,7 @@ object DomainMapper {
 
     fun map(track: Track): SavedTrackDto {
         return SavedTrackDto(
-            track.id,
+            track.trackId,
             track.trackName,
             track.artistName,
             track.trackTime,

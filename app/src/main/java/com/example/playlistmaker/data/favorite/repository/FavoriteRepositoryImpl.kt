@@ -14,13 +14,20 @@ class FavoriteRepositoryImpl(
 ): FavoriteRepository {
 
     override suspend fun insertTrack(track: Track) {
-        trackDao.insertTrack(
-            trackDbConverter.map(track)
-        )
+        val newTrack = trackDao.getTrackById(track.trackId)
+        if(newTrack != null){
+            trackDao.deleteTrack(newTrack)
+            trackDao.insertWithAutoPosition(newTrack)
+        } else {
+            trackDao.insertWithAutoPosition(
+                trackDbConverter.map(track)
+            )
+        }
     }
 
     override fun getFavoriteTracks(): Flow<List<Track>> = flow {
         val tracks = trackDao.getFavoriteTracks()
+        //val tracksReversed = tracks.reversed()
         emit(convertFromTrackEntity(tracks))
     }
 

@@ -7,7 +7,8 @@ class TrackDbConverter {
 
     fun map(track: Track): TrackEntity{
         return(TrackEntity(
-            track.id,
+            track.trackId,
+            0,
             track.trackName,
             track.artistName,
             track.trackTime,

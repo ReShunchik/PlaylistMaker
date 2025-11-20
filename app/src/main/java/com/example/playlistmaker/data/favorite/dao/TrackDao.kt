@@ -16,9 +16,18 @@ interface TrackDao {
     @Delete
     suspend fun deleteTrack(track: TrackEntity)
 
-    @Query("SELECT * FROM favorite_table")
+    @Query("SELECT * FROM favorite_table ORDER BY position DESC")
     suspend fun getFavoriteTracks(): List<TrackEntity>
 
     @Query("SELECT * FROM favorite_table WHERE id = :trackId")
     suspend fun getTrackById(trackId: Long): TrackEntity?
+
+    @Query("SELECT COALESCE(MAX(position), 0) + 1 FROM favorite_table")
+    suspend fun getNextPosition(): Long
+
+    suspend fun insertWithAutoPosition(track: TrackEntity) {
+        val nextPos = getNextPosition()
+        val newItem = track.copy(position = nextPos)
+        insertTrack(newItem)
+    }
 }

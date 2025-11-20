@@ -106,7 +106,7 @@ class AudioPlayerFragment : Fragment(), KoinComponent {
                 binding.albumInfo.text = track?.album
             }
             viewModel = getViewModel { parametersOf(track?.previewUrl) }
-            viewModel.checkIsFavoriteTrack(track.id)
+            viewModel.checkIsFavoriteTrack(track.trackId)
         } else {
             findNavController().navigateUp()
         }
