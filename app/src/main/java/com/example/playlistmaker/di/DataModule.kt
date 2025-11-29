@@ -1,7 +1,10 @@
 package com.example.playlistmaker.di
 
 import android.content.Context
+import androidx.room.Room
+import androidx.room.RoomDatabase
 import com.example.playlistmaker.data.dto.SavedTrackDto
+import com.example.playlistmaker.data.favorite.FavoriteDatabase
 import com.example.playlistmaker.data.search.network.ITunesApi
 import com.example.playlistmaker.data.search.network.NetworkClient
 import com.example.playlistmaker.data.search.network.RetrofitNetworkClient
@@ -60,6 +63,10 @@ val dataModule = module {
         )
     }
 
+    single {
+        Room.databaseBuilder(get(), FavoriteDatabase::class.java, "database.db")
+            .build().trackDao()
+    }
 
 }
 

@@ -185,7 +185,6 @@ class SearchFragment: Fragment() {
     }
 
     companion object{
-        const val TRACK = "track"
         const val CLICK_DEBOUNCE_DELAY = 300L
     }
 }

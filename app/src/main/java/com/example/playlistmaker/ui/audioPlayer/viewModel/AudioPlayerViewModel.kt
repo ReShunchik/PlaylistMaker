@@ -5,6 +5,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.playlistmaker.domain.favorite.api.FavoriteInteractor
+import com.example.playlistmaker.domain.search.models.Track
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -13,13 +15,21 @@ import java.text.SimpleDateFormat
 class AudioPlayerViewModel(
     private val mediaPlayer: MediaPlayer,
     private val url: String,
-    private val dateFormat: SimpleDateFormat
+    private val dateFormat: SimpleDateFormat,
+    private val favoriteInteractor: FavoriteInteractor
 ) : ViewModel() {
 
     private var timerJob: Job? = null
 
     private val playerStateLiveData = MutableLiveData<PlayerState>(PlayerState.Default(TIME_DEFAULT))
-    fun observePlayerStare(): LiveData<PlayerState> = playerStateLiveData
+    fun observePlayerState(): LiveData<PlayerState> = playerStateLiveData
+
+    private val trackStateLivaData = MutableLiveData<TrackState>()
+    fun observeTrackStateLiveData(): LiveData<TrackState> = trackStateLivaData
+
+    fun getCurrentTrackState(): TrackState{
+        return trackStateLivaData.value ?: TrackState.NotFavorite
+    }
 
     init {
         preparePlayer()
@@ -88,6 +98,31 @@ class AudioPlayerViewModel(
 
     private fun getCurrentPlayerPosition(): String {
         return dateFormat.format(mediaPlayer.currentPosition) ?: "00:00"
+    }
+
+    fun addToFavorite(track: Track){
+        viewModelScope.launch {
+            favoriteInteractor.insertTrack(track)
+            trackStateLivaData.postValue(TrackState.IsFavorite)
+        }
+    }
+
+    fun checkIsFavoriteTrack(trackId: Long){
+        viewModelScope.launch {
+            val track = favoriteInteractor.getTrackById(trackId)
+            if(track == null){
+                trackStateLivaData.postValue(TrackState.NotFavorite)
+            } else {
+                trackStateLivaData.postValue(TrackState.IsFavorite)
+            }
+        }
+    }
+
+    fun deleteTrackFromFavorite(track: Track){
+        viewModelScope.launch {
+            favoriteInteractor.deleteTrack(track)
+            trackStateLivaData.postValue(TrackState.NotFavorite)
+        }
     }
 
     companion object {

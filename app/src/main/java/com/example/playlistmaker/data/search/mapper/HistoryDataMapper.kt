@@ -8,6 +8,7 @@ object HistoryDataMapper {
     fun map(results: List<SavedTrackDto>): ArrayList<Track> {
         return results.map {
             Track(
+                it.id,
                 it.trackName,
                 it.artistName,
                 it.trackTime,
