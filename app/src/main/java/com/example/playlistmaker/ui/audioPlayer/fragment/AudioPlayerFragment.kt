@@ -5,16 +5,22 @@ import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
+import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentAudioPlayerBinding
 import com.example.playlistmaker.domain.search.models.Track
+import com.example.playlistmaker.ui.audioPlayer.adapters.BottomSheetAdapter
 import com.example.playlistmaker.ui.audioPlayer.viewModel.AudioPlayerViewModel
 import com.example.playlistmaker.ui.audioPlayer.viewModel.TrackState
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 import org.koin.core.component.KoinComponent
 import org.koin.core.parameter.parametersOf
@@ -77,6 +83,42 @@ class AudioPlayerFragment : Fragment(), KoinComponent {
             } else {
                 showPaused()
             }
+        }
+
+        val bottomSheetBehavior = BottomSheetBehavior.from(binding.bottomSheet)
+        bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+        binding.addButton.setOnClickListener{
+            bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+        }
+
+        viewModel.fillData()
+        viewModel.observePlaylistsLiveData().observe(viewLifecycleOwner){
+            val onItemClick: (message: String) -> Unit = { message ->
+                bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+                val toast = Toast(requireContext())
+
+                val layout = layoutInflater.inflate(
+                    R.layout.playlist_toast,
+                    null
+                )
+                val textView = layout.findViewById<TextView>(R.id.info)
+                textView.setText(message)
+
+                toast.duration = Toast.LENGTH_LONG
+                toast.view = layout
+                toast.show()
+                viewModel.fillData()
+            }
+            val adapter = BottomSheetAdapter(track.trackId, lifecycleScope, onItemClick)
+            adapter.setPlaylists(it)
+            binding.playlists.adapter = adapter
+            binding.playlists.layoutManager = LinearLayoutManager(requireContext())
+        }
+
+        binding.addPlaylist.setOnClickListener{
+            findNavController().navigate(
+                R.id.action_audioPlayerFragment_to_createPlaylistFragment
+            )
         }
     }
 

@@ -1,17 +1,13 @@
 package com.example.playlistmaker.ui.search.viewModel
 
-import android.os.SystemClock
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.playlistmaker.domain.api.consumer.Consumer
-import com.example.playlistmaker.domain.api.consumer.ConsumerData
 import com.example.playlistmaker.domain.search.models.Track
 import com.example.playlistmaker.domain.search.api.SearchHistoryInteractor
 import com.example.playlistmaker.domain.search.api.SearchInteractor
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 

@@ -4,13 +4,19 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import com.example.playlistmaker.data.favorite.dao.TrackDao
 import com.example.playlistmaker.data.favorite.entity.TrackEntity
+import com.example.playlistmaker.data.playlist.dao.PlaylistDao
+import com.example.playlistmaker.data.playlist.entity.PlaylistEntity
 
 @Database(
     version = 1,
-    entities = [TrackEntity::class],
+    entities = [
+        TrackEntity::class,
+        PlaylistEntity::class],
     exportSchema = false)
 abstract class FavoriteDatabase : RoomDatabase() {
 
     abstract fun trackDao(): TrackDao
+
+    abstract fun playlistDao(): PlaylistDao
 
 }

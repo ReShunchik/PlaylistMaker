@@ -101,6 +101,7 @@ class SearchFragment: Fragment() {
     private fun init(){
         val onTrackClickDebounce = debounce<Track>(CLICK_DEBOUNCE_DELAY, viewLifecycleOwner.lifecycleScope, false) {
             track ->
+            viewModel.freshHistory(track)
             findNavController().navigate(
                 R.id.action_searchFragment_to_audioPlayerFragment,
                 AudioPlayerFragment.createArgs(track)
