@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.core.net.toUri
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.PlaylistView2Binding
@@ -68,8 +69,7 @@ class BottomSheetAdapter(
             Glide.with(itemView.context)
                 .load(uri)
                 .placeholder(R.drawable.track_placeholder_100)
-                .centerCrop()
-                .transform(RoundedCorners(dpToPx(2f)))
+                .transform(CenterCrop(), RoundedCorners(dpToPx(2f)))
                 .into(binding.playlistImage)
         }
 

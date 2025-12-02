@@ -11,5 +11,6 @@
         <item name="controlerPrimaryColor">@color/blue</item>
         <item name="controlerSecondaryColor">@color/blue_light</item>
         <item name="colorPlayerButton">@color/grey</item>
+        <item name="colorDarkned">@color/black_ligth</item>
     </style>
 </resources>

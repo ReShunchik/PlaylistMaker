@@ -16,6 +16,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentCreatePlaylistBinding
@@ -93,10 +94,8 @@ class CreatePlaylistFragment: Fragment() {
                 if (uri != null) {
                     Glide.with(requireContext())
                         .load(uri)
-                        .centerCrop()
-                        .transform(RoundedCorners(dpToPx(8f)))
+                        .transform(CenterCrop(), RoundedCorners(dpToPx(8f)))
                         .into(binding.addPlaylistPhoto)
-                    //binding.addPlaylistPhoto.setImageURI(uri)
                     image = uri
                 }
             }

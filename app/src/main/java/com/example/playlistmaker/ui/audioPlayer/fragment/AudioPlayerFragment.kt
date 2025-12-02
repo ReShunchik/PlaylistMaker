@@ -8,8 +8,8 @@ import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.os.bundleOf
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
@@ -93,13 +93,12 @@ class AudioPlayerFragment : Fragment(), KoinComponent {
 
         bottomSheetBehavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
             override fun onStateChanged(bottomSheet: View, newState: Int) {
-                // newState — новое состояние BottomSheet
                 when (newState) {
                     BottomSheetBehavior.STATE_COLLAPSED -> {
-                        binding.main.alpha = 0.5F
+                        binding.darkned.isVisible = true
                     }
                     BottomSheetBehavior.STATE_HIDDEN -> {
-                        binding.main.alpha = 1F
+                        binding.darkned.isVisible = false
                     }
                 }
             }
