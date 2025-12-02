@@ -5,5 +5,4 @@ data class Playlist(
     val name: String,
     val descriotion: String,
     val tracks: ArrayList<Long>,
-    val count: Long
 )

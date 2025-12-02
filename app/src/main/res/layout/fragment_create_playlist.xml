@@ -4,6 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="?attr/bgColor"
     android:orientation="vertical">
 
     <LinearLayout
@@ -48,12 +49,17 @@
         android:layout_marginTop="@dimen/dimen_16dp"
         android:hint="@string/description" />
 
+    <View
+        android:layout_weight="1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
     <TextView
         android:id="@+id/create_playlist"
         android:layout_width="@dimen/dimen_328dp"
         android:layout_height="@dimen/dimen_44dp"
-        android:layout_marginTop="@dimen/dimen_56dp"
-        android:layout_gravity="center_horizontal|bottom"
+        android:layout_marginBottom="@dimen/dimen_32dp"
+        android:layout_gravity="center_horizontal"
         android:background="@drawable/rectangle_button"
         android:text="@string/create"
         android:gravity="center"

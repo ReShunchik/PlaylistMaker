@@ -4,7 +4,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.view.Gravity
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,6 +15,8 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentCreatePlaylistBinding
 import com.example.playlistmaker.ui.createPlaylist.viewModel.CreatePlaylistViewModel
@@ -60,7 +62,7 @@ class CreatePlaylistFragment: Fragment() {
         binding.buttonBack.setOnClickListener{
             val name = binding.playlistName.text.toString()
             val description = binding.playlistDescription.text.toString()
-            if((image != null) and (name.isNotEmpty() or description.isNotEmpty())){
+            if((image != null) or name.isNotEmpty() or description.isNotEmpty()){
                 dialogAlert = confirmDialog.show()
             } else {
                 findNavController().navigateUp()
@@ -89,7 +91,12 @@ class CreatePlaylistFragment: Fragment() {
         val pickMedia =
             registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
                 if (uri != null) {
-                    binding.addPlaylistPhoto.setImageURI(uri)
+                    Glide.with(requireContext())
+                        .load(uri)
+                        .centerCrop()
+                        .transform(RoundedCorners(dpToPx(8f)))
+                        .into(binding.addPlaylistPhoto)
+                    //binding.addPlaylistPhoto.setImageURI(uri)
                     image = uri
                 }
             }
@@ -124,6 +131,13 @@ class CreatePlaylistFragment: Fragment() {
         toast.duration = Toast.LENGTH_LONG
         toast.view = layout
         toast.show()
+    }
+
+    fun dpToPx(dp: Float): Int {
+        return TypedValue.applyDimension(
+            TypedValue.COMPLEX_UNIT_DIP,
+            dp,
+            requireContext().resources.displayMetrics).toInt()
     }
 
     override fun onDestroyView() {

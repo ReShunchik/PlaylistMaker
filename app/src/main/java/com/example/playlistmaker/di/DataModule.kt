@@ -73,5 +73,10 @@ val dataModule = module {
             .build().playlistDao()
     }
 
+    single {
+        Room.databaseBuilder(get(), FavoriteDatabase::class.java, "database.db")
+            .build().trackPlaylistDao()
+    }
+
 }
 

@@ -2,6 +2,7 @@ package com.example.playlistmaker.domain.playlist.api
 
 import android.net.Uri
 import com.example.playlistmaker.domain.playlist.models.Playlist
+import com.example.playlistmaker.domain.search.models.Track
 import kotlinx.coroutines.flow.Flow
 
 interface PlaylistInteractor {
@@ -10,7 +11,7 @@ interface PlaylistInteractor {
 
     suspend fun deletePlaylist(playlist: Playlist)
 
-    suspend fun updatePlayList(playlist: Playlist)
+    suspend fun updatePlayList(playlist: Playlist, track: Track?)
 
     fun getAllPlayList(): Flow<List<Playlist>>
 

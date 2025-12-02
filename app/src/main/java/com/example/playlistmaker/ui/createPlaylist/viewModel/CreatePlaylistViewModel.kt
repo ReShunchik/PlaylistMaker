@@ -19,7 +19,6 @@ class CreatePlaylistViewModel(
                 name,
                 description,
                 ArrayList(),
-                0
             )
             playlistInteractor.insertPlaylist(playlist, uri)
         }

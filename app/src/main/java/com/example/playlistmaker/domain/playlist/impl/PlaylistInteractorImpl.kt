@@ -5,6 +5,7 @@ import com.example.playlistmaker.domain.playlist.api.ImageRepository
 import com.example.playlistmaker.domain.playlist.api.PlaylistInteractor
 import com.example.playlistmaker.domain.playlist.api.PlaylistRepository
 import com.example.playlistmaker.domain.playlist.models.Playlist
+import com.example.playlistmaker.domain.search.models.Track
 import kotlinx.coroutines.flow.Flow
 
 class PlaylistInteractorImpl(
@@ -23,8 +24,8 @@ class PlaylistInteractorImpl(
         playlistRepository.deletePlaylist(playlist)
     }
 
-    override suspend fun updatePlayList(playlist: Playlist) {
-        playlistRepository.updatePlaylist(playlist)
+    override suspend fun updatePlayList(playlist: Playlist, track: Track?) {
+        playlistRepository.updatePlaylist(playlist, track)
     }
 
     override fun getAllPlayList(): Flow<List<Playlist>> {

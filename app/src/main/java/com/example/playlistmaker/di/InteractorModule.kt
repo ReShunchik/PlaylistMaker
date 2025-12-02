@@ -1,7 +1,5 @@
 package com.example.playlistmaker.di
 
-import com.example.playlistmaker.data.favorite.repository.FavoriteRepositoryImpl
-import com.example.playlistmaker.data.playlist.repository.ImageRepositoryImpl
 import com.example.playlistmaker.domain.favorite.api.FavoriteInteractor
 import com.example.playlistmaker.domain.favorite.impl.FavoriteInteractorImpl
 import com.example.playlistmaker.domain.playlist.api.ImageInteractor

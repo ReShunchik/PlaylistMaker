@@ -17,7 +17,6 @@ class PlaylistDbConverter(
             playlist.name,
             playlist.descriotion,
             gson.toJson(playlist.tracks, type),
-            playlist.count
         )
     }
 
@@ -27,7 +26,6 @@ class PlaylistDbConverter(
             playlist.name,
             playlist.descriotion,
             gson.fromJson(playlist.tracks, type),
-            playlist.count
         )
     }
 }

@@ -1,16 +1,21 @@
 package com.example.playlistmaker.data.playlist.repository
 
 import com.example.playlistmaker.data.mapper.PlaylistDbConverter
+import com.example.playlistmaker.data.mapper.TrackPlaylistDbConverter
 import com.example.playlistmaker.data.playlist.dao.PlaylistDao
+import com.example.playlistmaker.data.playlist.dao.TrackPlaylistDao
 import com.example.playlistmaker.data.playlist.entity.PlaylistEntity
 import com.example.playlistmaker.domain.playlist.api.PlaylistRepository
 import com.example.playlistmaker.domain.playlist.models.Playlist
+import com.example.playlistmaker.domain.search.models.Track
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
 class PlaylistRepositoryImpl(
     private val playlistDao: PlaylistDao,
-    private val playlistDbConverter: PlaylistDbConverter
+    private val trackPlaylistDao: TrackPlaylistDao,
+    private val playlistDbConverter: PlaylistDbConverter,
+    private val trackPlaylistDbConverter: TrackPlaylistDbConverter
 ): PlaylistRepository {
 
     override suspend fun insertPlaylist(playlist: Playlist) {
@@ -25,10 +30,15 @@ class PlaylistRepositoryImpl(
         )
     }
 
-    override suspend fun updatePlaylist(playlist: Playlist) {
+    override suspend fun updatePlaylist(playlist: Playlist, track: Track?) {
         playlistDao.updatePlaylist(
             playlistDbConverter.map(playlist)
         )
+        if(track != null){
+            trackPlaylistDao.insertTrack(
+                trackPlaylistDbConverter.map(track)
+            )
+        }
     }
 
     override fun getAllPlaylists(): Flow<List<Playlist>> = flow{

@@ -88,8 +88,24 @@ class AudioPlayerFragment : Fragment(), KoinComponent {
         val bottomSheetBehavior = BottomSheetBehavior.from(binding.bottomSheet)
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
         binding.addButton.setOnClickListener{
-            bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+            bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
         }
+
+        bottomSheetBehavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+                // newState — новое состояние BottomSheet
+                when (newState) {
+                    BottomSheetBehavior.STATE_COLLAPSED -> {
+                        binding.main.alpha = 0.5F
+                    }
+                    BottomSheetBehavior.STATE_HIDDEN -> {
+                        binding.main.alpha = 1F
+                    }
+                }
+            }
+
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {}
+        })
 
         viewModel.fillData()
         viewModel.observePlaylistsLiveData().observe(viewLifecycleOwner){
@@ -109,7 +125,7 @@ class AudioPlayerFragment : Fragment(), KoinComponent {
                 toast.show()
                 viewModel.fillData()
             }
-            val adapter = BottomSheetAdapter(track.trackId, lifecycleScope, onItemClick)
+            val adapter = BottomSheetAdapter(track,onItemClick, viewModel.onItemClickDb, viewModel.getPlaylistImage)
             adapter.setPlaylists(it)
             binding.playlists.adapter = adapter
             binding.playlists.layoutManager = LinearLayoutManager(requireContext())

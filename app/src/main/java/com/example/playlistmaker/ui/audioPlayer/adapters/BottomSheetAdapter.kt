@@ -13,19 +13,19 @@ import com.example.playlistmaker.databinding.PlaylistView2Binding
 import com.example.playlistmaker.domain.playlist.api.ImageInteractor
 import com.example.playlistmaker.domain.playlist.api.PlaylistInteractor
 import com.example.playlistmaker.domain.playlist.models.Playlist
+import com.example.playlistmaker.domain.search.models.Track
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 
 class BottomSheetAdapter(
-    private val trackId: Long,
-    private val coroutineScope: CoroutineScope,
-    private val onItemClick: (message: String) -> Unit
+    private val track: Track,
+    private val onItemClickUI: (message: String) -> Unit,
+    private val onItemClickDb: (playlist: Playlist, track: Track?) -> Unit,
+    private val getPlaylistImage: (playlistName: String) -> Uri?
 ) :RecyclerView.Adapter<BottomSheetAdapter.BottomSheetViewHolder>(), KoinComponent {
 
     private val playlists = ArrayList<Playlist>()
-    private val imageInteractor: ImageInteractor = getKoin().get<ImageInteractor>()
-    private val playlistInteractor: PlaylistInteractor = getKoin().get<PlaylistInteractor>()
 
     fun setPlaylists(playlists: List<Playlist>){
         this.playlists.addAll(playlists)
@@ -40,22 +40,21 @@ class BottomSheetAdapter(
 
     override fun onBindViewHolder(holder: BottomSheetViewHolder, position: Int) {
         val playlist = playlists[position]
-        val playlistImage = imageInteractor.getImage(playlist.name)?.toUri()
+        val playlistImage = getPlaylistImage(playlist.name)
         holder.bind(playlist, playlistImage)
         holder.itemView.setOnClickListener{
             val message: String
-            if(trackId in playlist.tracks){
+            if(track.trackId in playlist.tracks){
                 message =
                     holder.itemView.context.getString(R.string.yet_added) + " " + playlist.name
+                onItemClickDb(playlist, null)
             } else {
-                playlist.tracks.add(trackId)
+                playlist.tracks.add(track.trackId)
                 message =
                     holder.itemView.context.getString(R.string.added_to_playlist) + " " + playlist.name
-                coroutineScope.launch {
-                    playlistInteractor.updatePlayList(playlist)
-                }
+                onItemClickDb(playlist, track)
             }
-            onItemClick(message)
+            onItemClickUI(message)
         }
     }
 

@@ -50,7 +50,7 @@ class PlaylistAdapter(
                 .load(uri)
                 .placeholder(R.drawable.track_placeholder_100)
                 .centerCrop()
-                .transform(RoundedCorners(dpToPx(2f)))
+                .transform(RoundedCorners(dpToPx(8f)))
                 .into(binding.playlistImage)
         }
 
