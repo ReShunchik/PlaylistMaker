@@ -27,7 +27,6 @@ class FavoriteRepositoryImpl(
 
     override fun getFavoriteTracks(): Flow<List<Track>> = flow {
         val tracks = trackDao.getFavoriteTracks()
-        //val tracksReversed = tracks.reversed()
         emit(convertFromTrackEntity(tracks))
     }
 

@@ -1,6 +1,7 @@
 package com.example.playlistmaker.ui
 
 import android.app.Application
+import com.example.playlistmaker.di.adapterModule
 import com.example.playlistmaker.di.dataModule
 import com.example.playlistmaker.di.interactorModule
 import com.example.playlistmaker.di.repositoryModule
@@ -18,7 +19,13 @@ class App: Application() {
         super.onCreate()
         startKoin{
             androidContext(this@App)
-            modules(dataModule, interactorModule, repositoryModule, viewModelModule)
+            modules(
+                dataModule,
+                interactorModule,
+                repositoryModule,
+                viewModelModule,
+                adapterModule
+            )
         }
         settingsInteractor = getKoin().get()
         settingsInteractor.applySavedTheme()
