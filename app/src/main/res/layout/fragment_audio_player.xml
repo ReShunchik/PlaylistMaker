@@ -226,7 +226,7 @@
         android:layout_height="match_parent"
         android:visibility="invisible"
         android:alpha="0.5"
-        android:background="?attr/colorDarkned"/>
+        android:background="@color/black_ligth"/>
 
     <LinearLayout
         android:id="@+id/bottom_sheet"
