@@ -9,5 +9,6 @@
     <attr name="controlerPrimaryColor" format="color"/>
     <attr name="controlerSecondaryColor" format="color"/>
     <attr name="colorPlayerButton" format="color"/>
-    <attr name="colorDarkned" format="color"></attr>
+    <attr name="colorPlaylistName" format="color"/>
+    <attr name="colorMenuText" format="color"/>
 </resources>

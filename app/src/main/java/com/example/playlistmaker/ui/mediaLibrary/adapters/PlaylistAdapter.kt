@@ -13,10 +13,13 @@ import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.PlaylistView1Binding
 import com.example.playlistmaker.domain.playlist.api.ImageInteractor
 import com.example.playlistmaker.domain.playlist.models.Playlist
+import org.koin.core.component.KoinComponent
 
 class PlaylistAdapter(
-    private val imageInteractor: ImageInteractor
-): RecyclerView.Adapter<PlaylistAdapter.PlaylistViewHolder>() {
+    private val onItemClick: (playlist: Playlist) -> Unit
+): RecyclerView.Adapter<PlaylistAdapter.PlaylistViewHolder>(), KoinComponent {
+
+    private val imageInteractor: ImageInteractor = getKoin().get<ImageInteractor>()
 
     private val playlists = ArrayList<Playlist>()
 
@@ -35,9 +38,11 @@ class PlaylistAdapter(
 
     override fun onBindViewHolder(holder: PlaylistViewHolder, position: Int) {
         val playlist = playlists[position]
-        val playlistImage = imageInteractor.getImage(playlist.name)?.toUri()
+        val playlistImage = imageInteractor.getImage(playlist.imageName)?.toUri()
         holder.bind(playlist, playlistImage)
-
+        holder.itemView.setOnClickListener{
+            onItemClick(playlist)
+        }
     }
 
     class PlaylistViewHolder(

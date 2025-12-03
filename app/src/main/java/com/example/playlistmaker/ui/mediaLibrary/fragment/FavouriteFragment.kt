@@ -16,9 +16,8 @@ import com.example.playlistmaker.ui.audioPlayer.fragment.AudioPlayerFragment
 import com.example.playlistmaker.ui.mediaLibrary.viewModel.FavoriteState
 import com.example.playlistmaker.ui.mediaLibrary.viewModel.FavoriteViewModel
 import com.example.playlistmaker.ui.search.adapters.TrackAdapter
-import com.example.playlistmaker.ui.search.fragment.SearchFragment.Companion.CLICK_DEBOUNCE_DELAY
-import com.example.playlistmaker.ui.search.viewModel.SearchViewModel
 import com.example.playlistmaker.utils.debounce
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class FavouriteFragment: Fragment() {

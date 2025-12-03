@@ -1,11 +1,13 @@
 package com.example.playlistmaker.data.playlist.repository
 
+import android.content.Context
+import android.net.Uri
+import android.util.Log
 import com.example.playlistmaker.data.mapper.PlaylistDbConverter
-import com.example.playlistmaker.data.mapper.TrackPlaylistDbConverter
 import com.example.playlistmaker.data.playlist.dao.PlaylistDao
-import com.example.playlistmaker.data.playlist.dao.TrackPlaylistDao
 import com.example.playlistmaker.data.playlist.entity.PlaylistEntity
 import com.example.playlistmaker.domain.playlist.api.PlaylistRepository
+import com.example.playlistmaker.domain.playlist.api.TrackPlaylistRepository
 import com.example.playlistmaker.domain.playlist.models.Playlist
 import com.example.playlistmaker.domain.search.models.Track
 import kotlinx.coroutines.flow.Flow
@@ -13,9 +15,8 @@ import kotlinx.coroutines.flow.flow
 
 class PlaylistRepositoryImpl(
     private val playlistDao: PlaylistDao,
-    private val trackPlaylistDao: TrackPlaylistDao,
+    private val trackPlaylistRepository: TrackPlaylistRepository,
     private val playlistDbConverter: PlaylistDbConverter,
-    private val trackPlaylistDbConverter: TrackPlaylistDbConverter
 ): PlaylistRepository {
 
     override suspend fun insertPlaylist(playlist: Playlist) {
@@ -31,14 +32,15 @@ class PlaylistRepositoryImpl(
     }
 
     override suspend fun updatePlaylist(playlist: Playlist, track: Track?) {
+        Log.d("Image", "Image checking 1.1")
         playlistDao.updatePlaylist(
             playlistDbConverter.map(playlist)
         )
+        Log.d("Image", "Image checking 1.2")
         if(track != null){
-            trackPlaylistDao.insertTrack(
-                trackPlaylistDbConverter.map(track)
-            )
+            trackPlaylistRepository.insertTrack(track)
         }
+        Log.d("Image", "Image checking 1.3")
     }
 
     override fun getAllPlaylists(): Flow<List<Playlist>> = flow{
@@ -50,5 +52,10 @@ class PlaylistRepositoryImpl(
         return playlists.map {
             playlist -> playlistDbConverter.map(playlist)
         }
+    }
+
+    companion object{
+        const val CATALOG = "playlistalbum"
+        const val EXTENSION = ".jpg"
     }
 }

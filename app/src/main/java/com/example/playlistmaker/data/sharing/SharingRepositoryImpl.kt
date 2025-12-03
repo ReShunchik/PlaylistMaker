@@ -14,6 +14,7 @@ class SharingRepositoryImpl(
         val shareIntent = Intent(Intent.ACTION_SEND).apply {
             type = "text/plain"
             putExtra(Intent.EXTRA_TEXT, context.getString(R.string.share_link))
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         }
         context.startActivity(shareIntent)
     }
@@ -32,6 +33,15 @@ class SharingRepositoryImpl(
             putExtra(Intent.EXTRA_TEXT, context.getString(R.string.email_message))
         }
         context.startActivity(supportIntent)
+    }
+
+    override fun sharePlaylist(message: String) {
+        val shareIntent = Intent(Intent.ACTION_SEND).apply {
+            type = "text/plain"
+            putExtra(Intent.EXTRA_TEXT, message)
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        }
+        context.startActivity(shareIntent)
     }
 
 }

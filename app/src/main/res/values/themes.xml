@@ -11,7 +11,8 @@
         <item name="controlerPrimaryColor">@color/white</item>
         <item name="controlerSecondaryColor">@color/grey_light</item>
         <item name="colorPlayerButton">@color/grey_transparent</item>
-        <item name="colorDarkned">@color/grey_light</item>
+        <item name="colorPlaylistName">@color/black_ligth</item>
+        <item name="colorMenuText">@color/grey</item>
     </style>
 
     <style name="Theme.PlaylistMaker" parent="Base.Theme.PlaylistMaker" />

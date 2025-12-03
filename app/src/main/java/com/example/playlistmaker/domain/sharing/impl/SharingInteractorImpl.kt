@@ -18,4 +18,8 @@ class SharingInteractorImpl(
     override fun openSupport() {
         sharingRepository.openSupport()
     }
+
+    override fun sharePlaylist(message: String) {
+        sharingRepository.sharePlaylist(message)
+    }
 }
