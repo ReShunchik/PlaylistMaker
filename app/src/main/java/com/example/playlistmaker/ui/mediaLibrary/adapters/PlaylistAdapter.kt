@@ -16,7 +16,7 @@ import com.example.playlistmaker.domain.playlist.models.Playlist
 import org.koin.core.component.KoinComponent
 
 class PlaylistAdapter(
-    private val onItemClick: (playlist: Playlist) -> Unit
+    private val onItemClick: (playlistId: Long) -> Unit
 ): RecyclerView.Adapter<PlaylistAdapter.PlaylistViewHolder>(), KoinComponent {
 
     private val imageInteractor: ImageInteractor = getKoin().get<ImageInteractor>()
@@ -41,7 +41,7 @@ class PlaylistAdapter(
         val playlistImage = imageInteractor.getImage(playlist.imageName)?.toUri()
         holder.bind(playlist, playlistImage)
         holder.itemView.setOnClickListener{
-            onItemClick(playlist)
+            onItemClick(playlist.id)
         }
     }
 

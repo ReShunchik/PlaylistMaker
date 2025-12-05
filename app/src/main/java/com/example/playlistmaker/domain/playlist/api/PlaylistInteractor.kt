@@ -15,6 +15,8 @@ interface PlaylistInteractor {
 
     suspend fun updatePlaylistWithImage(playlist: Playlist, uri: Uri?)
 
+    suspend fun getPlaylistById(playlistId: Long): Playlist
+
     fun getAllPlayList(): Flow<List<Playlist>>
 
 }

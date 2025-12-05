@@ -43,6 +43,11 @@ class PlaylistRepositoryImpl(
         Log.d("Image", "Image checking 1.3")
     }
 
+    override suspend fun getPlaylistId(playlistId: Long): Playlist {
+        val playlist = playlistDao.getPlaylistId(playlistId)
+        return playlistDbConverter.map(playlist)
+    }
+
     override fun getAllPlaylists(): Flow<List<Playlist>> = flow{
         val playlists = playlistDao.getAllPlaylists()
         emit(convertFromPlaylistEntity(playlists))

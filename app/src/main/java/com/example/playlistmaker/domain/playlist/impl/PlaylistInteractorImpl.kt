@@ -39,6 +39,10 @@ class PlaylistInteractorImpl(
         }
     }
 
+    override suspend fun getPlaylistById(playlistId: Long): Playlist {
+        return playlistRepository.getPlaylistId(playlistId)
+    }
+
     override fun getAllPlayList(): Flow<List<Playlist>> {
         return playlistRepository.getAllPlaylists()
     }

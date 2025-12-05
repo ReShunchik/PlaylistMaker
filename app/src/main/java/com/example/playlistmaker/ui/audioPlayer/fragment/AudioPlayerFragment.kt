@@ -109,7 +109,7 @@ class AudioPlayerFragment : Fragment(), KoinComponent {
         viewModel.fillData()
         viewModel.observePlaylistsLiveData().observe(viewLifecycleOwner){
             val onItemClick: (message: String) -> Unit = { message ->
-                //bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+                bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
                 val toast = Toast(requireContext())
 
                 val layout = layoutInflater.inflate(

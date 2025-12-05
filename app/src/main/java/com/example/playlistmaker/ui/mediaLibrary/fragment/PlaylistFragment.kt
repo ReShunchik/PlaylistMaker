@@ -58,11 +58,11 @@ class PlaylistFragment: Fragment(), KoinComponent {
     }
 
     private fun setAdapter(){
-        val onItemClick: (playlist: Playlist) -> Unit = {
-            playlist ->
+        val onItemClick: (playlistId: Long) -> Unit = {
+            playlistId ->
             findNavController().navigate(
                 R.id.action_mediaLibraryFragment_to_trackPlaylistFragment,
-                TrackPlaylistFragment.createArgs(playlist)
+                TrackPlaylistFragment.createArgs(playlistId)
             )
         }
         adapter = PlaylistAdapter(onItemClick)

@@ -6,7 +6,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.playlistmaker.di.viewModelModule
 import com.example.playlistmaker.domain.playlist.api.ImageInteractor
 import com.example.playlistmaker.domain.playlist.api.PlaylistInteractor
 import com.example.playlistmaker.domain.playlist.api.TrackPlaylistInteractor
@@ -27,6 +26,9 @@ class TrackPlaylistViewModel(
 
     private val imagePlaylistLiveData = MutableLiveData<Uri?>()
     fun observeImagePlaylist(): LiveData<Uri?> = imagePlaylistLiveData
+
+    private val playlistLiveData = MutableLiveData<Playlist>()
+    fun observePlaylist(): LiveData<Playlist> = playlistLiveData
 
     fun fillData(idList: List<Long>){
         viewModelScope.launch {
@@ -98,6 +100,7 @@ class TrackPlaylistViewModel(
                     message += " - "
                     message += it.trackName + "("
                     message += it.trackTime + ")"
+                    message += "\n"
                     position += 1
                 }
             }
@@ -105,13 +108,16 @@ class TrackPlaylistViewModel(
         sharingInteractor.sharePlaylist(message)
     }
 
+    fun fillPlaylist(id: Long){
+        viewModelScope.launch {
+            val playlist = playlistInteractor.getPlaylistById(id)
+            playlistLiveData.postValue(playlist)
+        }
+    }
+
     fun deletePlaylist(playlist: Playlist){
         viewModelScope.launch {
             playlistInteractor.deletePlaylist(playlist)
         }
-    }
-
-    companion object{
-        const val PATTERN = "mm:ss"
     }
 }

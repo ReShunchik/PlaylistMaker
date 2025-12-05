@@ -50,8 +50,14 @@ class TrackPlaylistFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        viewModel.observePlaylist().observe(viewLifecycleOwner){
+            playlist = it
+            setInfo(playlist)
+        }
+
+        val playlistId = requireArguments().get(PLAYLIST) as Long
+        viewModel.fillPlaylist(playlistId)
         setImageSize()
-        setInfo()
         setAdapter()
 
         viewModel.observeTracksState().observe(viewLifecycleOwner){
@@ -127,12 +133,7 @@ class TrackPlaylistFragment: Fragment() {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        setInfo()
-    }
-
-    private fun showToast(){
+    private fun showToast(message: String){
         val toast = Toast(requireContext())
 
         val layout = layoutInflater.inflate(
@@ -141,7 +142,7 @@ class TrackPlaylistFragment: Fragment() {
         )
         val textView = layout.findViewById<TextView>(R.id.info)
         val info =
-            requireContext().getString(R.string.no_tracks)
+            message
         textView.setText(info)
 
         toast.duration = Toast.LENGTH_LONG
@@ -161,7 +162,7 @@ class TrackPlaylistFragment: Fragment() {
         if(playlist.tracks.isNotEmpty()){
             viewModel.sharePlaylist(playlist)
         } else {
-            showToast()
+            showToast(requireContext().getString(R.string.no_tracks))
         }
     }
 
@@ -174,8 +175,7 @@ class TrackPlaylistFragment: Fragment() {
 
     }
 
-    private fun setInfo(){
-        playlist = requireArguments().get(PLAYLIST) as Playlist
+    private fun setInfo(playlist: Playlist){
         viewModel.fillData(playlist.tracks)
         viewModel.fillImage(playlist.imageName)
         binding.playlistName.text = playlist.name
@@ -185,6 +185,9 @@ class TrackPlaylistFragment: Fragment() {
         } else {
             binding.playlistDescription.isVisible = true
             binding.playlistDescription.text = playlist.descriotion
+        }
+        if(playlist.tracks.isEmpty()){
+            showToast(requireContext().getString(R.string.empty_playlist))
         }
 
         binding.menuPlaylistName.text = playlist.name
@@ -257,7 +260,7 @@ class TrackPlaylistFragment: Fragment() {
     companion object{
         private const val PLAYLIST = "playlist"
 
-        fun createArgs(playlist: Playlist): Bundle =
-            bundleOf(PLAYLIST to playlist)
+        fun createArgs(playlistId: Long): Bundle =
+            bundleOf(PLAYLIST to playlistId)
     }
 }
