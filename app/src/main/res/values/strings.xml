@@ -74,4 +74,5 @@
 
     <string name="edit_playlist">Редактировать плейлист</string>
     <string name="save">Сохранить</string>
+    <string name="no_tracks">В этом плейлисте нет списка треков, которым можно поделиться</string>
 </resources>

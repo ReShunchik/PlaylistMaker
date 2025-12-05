@@ -6,6 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.TextView
+import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -52,8 +54,6 @@ class TrackPlaylistFragment: Fragment() {
         setInfo()
         setAdapter()
 
-        viewModel.fillData(playlist.tracks)
-        viewModel.fillImage(playlist.imageName)
         viewModel.observeTracksState().observe(viewLifecycleOwner){
             setPlaylistTracks(it)
         }
@@ -82,6 +82,7 @@ class TrackPlaylistFragment: Fragment() {
 
         binding.share.setOnClickListener{
             shareTracks()
+            menuBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
         }
 
         menuBottomSheetBehavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
@@ -126,6 +127,28 @@ class TrackPlaylistFragment: Fragment() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        setInfo()
+    }
+
+    private fun showToast(){
+        val toast = Toast(requireContext())
+
+        val layout = layoutInflater.inflate(
+            R.layout.playlist_toast,
+            null
+        )
+        val textView = layout.findViewById<TextView>(R.id.info)
+        val info =
+            requireContext().getString(R.string.no_tracks)
+        textView.setText(info)
+
+        toast.duration = Toast.LENGTH_LONG
+        toast.view = layout
+        toast.show()
+    }
+
     private fun setImage(uri: Uri?, view: ImageView){
         Glide.with(requireContext())
             .load(uri)
@@ -137,6 +160,8 @@ class TrackPlaylistFragment: Fragment() {
     private fun shareTracks(){
         if(playlist.tracks.isNotEmpty()){
             viewModel.sharePlaylist(playlist)
+        } else {
+            showToast()
         }
     }
 
@@ -151,6 +176,8 @@ class TrackPlaylistFragment: Fragment() {
 
     private fun setInfo(){
         playlist = requireArguments().get(PLAYLIST) as Playlist
+        viewModel.fillData(playlist.tracks)
+        viewModel.fillImage(playlist.imageName)
         binding.playlistName.text = playlist.name
         val description = playlist.descriotion
         if(description.isNullOrEmpty()){

@@ -135,6 +135,7 @@ class SearchFragment: Fragment() {
 
     private fun clearButtonVisibility(s: CharSequence?): Boolean {
         return !s.isNullOrEmpty()
+        showSearchHistory(viewModel.getHistory())
     }
 
     private fun showLoading(){

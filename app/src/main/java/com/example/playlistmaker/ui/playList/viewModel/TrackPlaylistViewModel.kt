@@ -78,7 +78,7 @@ class TrackPlaylistViewModel(
             renderState(TrackPlaylistState.Empty)
         } else {
             renderState(TrackPlaylistState.Content(
-                tracks,
+                tracks.reversed(),
                 calculateTime(tracks)))
         }
     }

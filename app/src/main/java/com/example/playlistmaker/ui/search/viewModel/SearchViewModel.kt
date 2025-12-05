@@ -60,6 +60,10 @@ class SearchViewModel(
         }
     }
 
+    fun getHistory(): ArrayList<Track>{
+        return searchHistoryInteractor.getHistory()
+    }
+
     fun clearHistory(){
         searchHistoryInteractor.clearHistory()
     }
