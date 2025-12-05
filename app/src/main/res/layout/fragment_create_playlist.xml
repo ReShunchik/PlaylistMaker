@@ -24,6 +24,7 @@
             app:layout_constraintTop_toTopOf="parent"/>
 
         <TextView
+            android:id="@+id/fragment_title"
             style="@style/activity_title"
             android:text="@string/new_playlist" />
 

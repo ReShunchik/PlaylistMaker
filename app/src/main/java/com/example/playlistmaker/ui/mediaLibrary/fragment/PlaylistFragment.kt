@@ -14,6 +14,7 @@ import com.example.playlistmaker.domain.playlist.models.Playlist
 import com.example.playlistmaker.ui.mediaLibrary.adapters.PlaylistAdapter
 import com.example.playlistmaker.ui.mediaLibrary.viewModel.PlaylistState
 import com.example.playlistmaker.ui.mediaLibrary.viewModel.PlaylistViewModel
+import com.example.playlistmaker.ui.playList.fragment.TrackPlaylistFragment
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.component.KoinComponent
 
@@ -24,7 +25,8 @@ class PlaylistFragment: Fragment(), KoinComponent {
 
     private val viewModel by viewModel<PlaylistViewModel>()
 
-    private val adapter = getKoin().get<PlaylistAdapter>()
+    private lateinit var adapter: PlaylistAdapter
+
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -37,6 +39,7 @@ class PlaylistFragment: Fragment(), KoinComponent {
         binding.addPlaylist.isVisible = true
         binding.info.text = requireContext().getString(R.string.no_playlist)
 
+        setAdapter()
         binding.trackList.adapter = adapter
         binding.trackList.layoutManager = GridLayoutManager(requireContext(), 2)
 
@@ -52,6 +55,17 @@ class PlaylistFragment: Fragment(), KoinComponent {
         binding.addPlaylist.setOnClickListener{
             findNavController().navigate(R.id.action_mediaLibraryFragment_to_createPlaylistFragment)
         }
+    }
+
+    private fun setAdapter(){
+        val onItemClick: (playlistId: Long) -> Unit = {
+            playlistId ->
+            findNavController().navigate(
+                R.id.action_mediaLibraryFragment_to_trackPlaylistFragment,
+                TrackPlaylistFragment.createArgs(playlistId)
+            )
+        }
+        adapter = PlaylistAdapter(onItemClick)
     }
 
     private fun showEmptyScreen(){

@@ -41,7 +41,7 @@ class BottomSheetAdapter(
 
     override fun onBindViewHolder(holder: BottomSheetViewHolder, position: Int) {
         val playlist = playlists[position]
-        val playlistImage = getPlaylistImage(playlist.name)
+        val playlistImage = getPlaylistImage(playlist.imageName)
         holder.bind(playlist, playlistImage)
         holder.itemView.setOnClickListener{
             val message: String

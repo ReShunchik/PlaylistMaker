@@ -151,4 +151,12 @@
         <item name="android:textColor">?attr/colorPrimary</item>
     </style>
 
+    <style name="bottom_sheet_button">
+        <item name="android:paddingVertical">@dimen/dimen_20dp</item>
+        <item name="android:paddingStart">@dimen/dimen_16dp</item>
+        <item name="android:fontFamily">@font/ys_display_regular</item>
+        <item name="android:textSize">@dimen/text_size_16sp</item>
+        <item name="android:textColor">?attr/colorPrimary</item>
+    </style>
+
 </resources>
