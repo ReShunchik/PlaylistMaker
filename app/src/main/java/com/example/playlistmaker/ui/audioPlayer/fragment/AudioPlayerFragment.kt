@@ -54,10 +54,6 @@ class AudioPlayerFragment : Fragment(), KoinComponent {
             findNavController().navigateUp()
         }
 
-        binding.playerButton.setOnClickListener{
-            viewModel.onPlayButtonClicked()
-        }
-
         binding.favoriteButton.setOnClickListener{
             if(track != null){
                 val track = track
@@ -72,16 +68,6 @@ class AudioPlayerFragment : Fragment(), KoinComponent {
             when(it){
                 is TrackState.IsFavorite -> binding.favoriteButton.setImageResource(R.drawable.ic_like_24)
                 is TrackState.NotFavorite -> binding.favoriteButton.setImageResource(R.drawable.ic_not_like_24)
-            }
-        }
-
-        viewModel.observePlayerState().observe(viewLifecycleOwner){
-            binding.playerButton.isEnabled = it.isPlayButtonEnabled
-            binding.currentTime.text = it.progress
-            if(it.isPlaying){
-                showPlaying()
-            } else {
-                showPaused()
             }
         }
 
@@ -130,6 +116,10 @@ class AudioPlayerFragment : Fragment(), KoinComponent {
             binding.playlists.layoutManager = LinearLayoutManager(requireContext())
         }
 
+        binding.playerButton.observeTrackTime().observe(viewLifecycleOwner){
+            binding.currentTime.text = it
+        }
+
         binding.addPlaylist.setOnClickListener{
             findNavController().navigate(
                 R.id.action_audioPlayerFragment_to_createPlaylistFragment
@@ -162,8 +152,9 @@ class AudioPlayerFragment : Fragment(), KoinComponent {
                 binding.albumGroup.visibility = View.VISIBLE
                 binding.albumInfo.text = track?.album
             }
-            viewModel = getViewModel { parametersOf(track?.previewUrl) }
+            viewModel = getViewModel()
             viewModel.checkIsFavoriteTrack(track.trackId)
+            binding.playerButton.setConfiguration(getKoin().get(), track?.previewUrl)
         } else {
             findNavController().navigateUp()
         }
@@ -174,19 +165,6 @@ class AudioPlayerFragment : Fragment(), KoinComponent {
             TypedValue.COMPLEX_UNIT_DIP,
             dp,
             this.resources.displayMetrics).toInt()
-    }
-
-    private fun showPlaying(){
-        binding.playerButton.setImageResource(R.drawable.ic_pause_84)
-    }
-
-    private fun showPaused(){
-        binding.playerButton.setImageResource(R.drawable.ic_play_84)
-    }
-
-    override fun onPause() {
-        super.onPause()
-        viewModel.onPause()
     }
 
     override fun onDestroyView() {
