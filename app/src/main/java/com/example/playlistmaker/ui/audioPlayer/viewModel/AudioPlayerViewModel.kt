@@ -20,17 +20,11 @@ import java.text.SimpleDateFormat
 
 class AudioPlayerViewModel(
     private val mediaPlayer: MediaPlayer,
-    private val url: String,
     private val dateFormat: SimpleDateFormat,
     private val favoriteInteractor: FavoriteInteractor,
     private val playlistInteractor: PlaylistInteractor,
     private val imageInteractor: ImageInteractor
 ) : ViewModel() {
-
-    private var timerJob: Job? = null
-
-    private val playerStateLiveData = MutableLiveData<PlayerState>(PlayerState.Default(TIME_DEFAULT))
-    fun observePlayerState(): LiveData<PlayerState> = playerStateLiveData
 
     private val trackStateLivaData = MutableLiveData<TrackState>()
     fun observeTrackStateLiveData(): LiveData<TrackState> = trackStateLivaData
@@ -54,10 +48,6 @@ class AudioPlayerViewModel(
         imageInteractor.getImage(playlistName)?.toUri() ?: null
     }
 
-    init {
-        preparePlayer()
-    }
-
     fun fillData(){
         viewModelScope.launch {
             playlistInteractor
@@ -68,69 +58,8 @@ class AudioPlayerViewModel(
         }
     }
 
-    private fun preparePlayer() {
-        mediaPlayer.setDataSource(url)
-        mediaPlayer.prepareAsync()
-        mediaPlayer.setOnPreparedListener {
-            playerStateLiveData.postValue(PlayerState.Prepared(TIME_DEFAULT))
-        }
-        mediaPlayer.setOnCompletionListener {
-            timerJob?.cancel()
-            playerStateLiveData.postValue(PlayerState.Prepared(TIME_DEFAULT))
-        }
-    }
-
-    fun onPlayButtonClicked() {
-        when(playerStateLiveData.value) {
-            is PlayerState.Playing -> {
-                pausePlayer()
-            }
-            is PlayerState.Prepared, is PlayerState.Paused -> {
-                startPlayer()
-            }
-            else -> { }
-        }
-    }
-
     override fun onCleared() {
         super.onCleared()
-        releasePlayer()
-    }
-
-    fun onPause() {
-        pausePlayer()
-    }
-
-    private fun startPlayer() {
-        mediaPlayer.start()
-        playerStateLiveData.postValue(PlayerState.Playing(getCurrentPlayerPosition()))
-        startTimer()
-    }
-
-    fun pausePlayer() {
-        mediaPlayer.pause()
-        timerJob?.cancel()
-        playerStateLiveData.postValue(PlayerState.Paused(getCurrentPlayerPosition()))
-    }
-
-    private fun releasePlayer() {
-        mediaPlayer.stop()
-        mediaPlayer.release()
-        playerStateLiveData.value = PlayerState.Default(TIME_DEFAULT)
-    }
-
-    private fun startTimer() {
-        timerJob?.cancel()
-        timerJob = viewModelScope.launch {
-            while (mediaPlayer.isPlaying) {
-                delay(TIME_UPDATE_DELAY)
-                playerStateLiveData.postValue(PlayerState.Playing(getCurrentPlayerPosition()))
-            }
-        }
-    }
-
-    private fun getCurrentPlayerPosition(): String {
-        return dateFormat.format(mediaPlayer.currentPosition) ?: "00:00"
     }
 
     fun addToFavorite(track: Track){
@@ -157,11 +86,4 @@ class AudioPlayerViewModel(
             trackStateLivaData.postValue(TrackState.NotFavorite)
         }
     }
-
-    companion object {
-        private const val TIME_DEFAULT = "00:00"
-        private const val TIME_UPDATE_DELAY = 300L
-    }
-
-
 }

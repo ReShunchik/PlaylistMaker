@@ -38,4 +38,6 @@
 
     <dimen name="button_width">328dp</dimen>
     <dimen name="button_height">200dp</dimen>
+
+    <dimen name="PlaybackButtonViewMinSize">50dp</dimen>
 </resources>
