@@ -6,15 +6,17 @@ import androidx.lifecycle.ViewModel
 import com.example.playlistmaker.domain.settings.api.SettingsInteractor
 import com.example.playlistmaker.domain.sharing.api.SharingInteractor
 import com.example.playlistmaker.domain.settings.models.ThemeSettings
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 
 class SettingsViewModel(
     private val sharingInteractor: SharingInteractor,
     private val settingsInteractor: SettingsInteractor,
 ): ViewModel(){
 
-
-    private val darkModeLiveData = MutableLiveData<Boolean>(getThemeSettings().darkTheme)
-    fun observeDarkMode(): LiveData<Boolean> = darkModeLiveData
+    private val _darkTheme = MutableStateFlow(getThemeSettings().darkTheme)
+    val darkTheme: StateFlow<Boolean> = _darkTheme.asStateFlow()
 
     fun shareApp(){
         sharingInteractor.shareApp()
@@ -29,7 +31,7 @@ class SettingsViewModel(
     }
 
     fun switchTheme(darkTheme: Boolean){
-        darkModeLiveData.postValue(darkTheme)
+        _darkTheme.value = darkTheme
         settingsInteractor.updateThemeSetting(ThemeSettings(darkTheme))
     }
 
