@@ -497,7 +497,7 @@ fun TrackItem(
             .padding(start = 8.dp)
             .weight(1f)) {
             Text(
-                text = remember { track.trackName },
+                text = track.trackName ,
                 fontSize = 16.sp,
                 fontFamily = FontFamily(Font(R.font.ys_display_regular)),
                 color = MaterialTheme.colorScheme.primary,
@@ -506,7 +506,7 @@ fun TrackItem(
 
             Row() {
                 Text(
-                    text = remember { track.artistName },
+                    text = track.artistName,
                     fontSize = 11.sp,
                     fontFamily = FontFamily(Font(R.font.ys_display_regular)),
                     color = MaterialTheme.colorScheme.onPrimary,
@@ -524,7 +524,7 @@ fun TrackItem(
                 )
 
                 Text(
-                    text = remember { track.trackTime },
+                    text = track.trackTime,
                     fontSize = 11.sp,
                     fontFamily = FontFamily(Font(R.font.ys_display_regular)),
                     color = MaterialTheme.colorScheme.onPrimary,
@@ -563,7 +563,7 @@ fun TrackHistory(
     viewModel: SearchViewModel,
     navController: NavController
 ){
-    val tracks by remember { mutableStateOf(viewModel.getHistory()) }
+    val tracks by viewModel.trackHistory.collectAsState()
 
     if (tracks.isNotEmpty()){
         Column(

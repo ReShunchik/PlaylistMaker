@@ -23,6 +23,9 @@ class SearchViewModel(
     private val _trackState = MutableStateFlow<TracksState>(TracksState.Default)
     val trackState: StateFlow<TracksState> = _trackState.asStateFlow()
 
+    private val _trackHistory = MutableStateFlow<ArrayList<Track>>(getHistory())
+    val trackHistory: StateFlow<ArrayList<Track>> = _trackHistory.asStateFlow()
+
     fun searchRequest() {
         val searchText = latestSearchText
         if(searchText.isNotEmpty()){
@@ -68,6 +71,7 @@ class SearchViewModel(
 
     fun freshHistory(track: Track){
         searchHistoryInteractor.freshHistory(track)
+        _trackHistory.value = getHistory()
     }
 
     fun searchDebounce(changedText: String){
@@ -86,6 +90,7 @@ class SearchViewModel(
 
     fun clearSearch(){
         _trackState.value = TracksState.History
+        _trackHistory.value = getHistory()
     }
 
     fun setDefault(){
