@@ -1,6 +1,5 @@
 package com.example.playlistmaker.ui.audioPlayer.viewModel
 
-import android.media.MediaPlayer
 import android.net.Uri
 import androidx.core.net.toUri
 import androidx.lifecycle.LiveData
@@ -12,19 +11,17 @@ import com.example.playlistmaker.domain.playlist.api.ImageInteractor
 import com.example.playlistmaker.domain.playlist.api.PlaylistInteractor
 import com.example.playlistmaker.domain.playlist.models.Playlist
 import com.example.playlistmaker.domain.search.models.Track
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.count
+import com.example.playlistmaker.services.AudioPlayerControl
 import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
 
 class AudioPlayerViewModel(
-    private val mediaPlayer: MediaPlayer,
-    private val dateFormat: SimpleDateFormat,
     private val favoriteInteractor: FavoriteInteractor,
     private val playlistInteractor: PlaylistInteractor,
     private val imageInteractor: ImageInteractor
 ) : ViewModel() {
+
+    private val playerStateLiveData = MutableLiveData<PlayerState>(PlayerState.Default())
+    fun observePlayerStateLiveData(): LiveData<PlayerState> = playerStateLiveData
 
     private val trackStateLivaData = MutableLiveData<TrackState>()
     fun observeTrackStateLiveData(): LiveData<TrackState> = trackStateLivaData
@@ -48,6 +45,44 @@ class AudioPlayerViewModel(
         imageInteractor.getImage(playlistName)?.toUri() ?: null
     }
 
+    private var audioPlayerControl: AudioPlayerControl? = null
+
+    fun setAudioPlayerControl(audioPlayerControl: AudioPlayerControl) {
+        this.audioPlayerControl = audioPlayerControl
+
+        viewModelScope.launch {
+            audioPlayerControl.getCurrentPlayerState().collect {
+                playerStateLiveData.postValue(it)
+            }
+        }
+    }
+
+    fun onPlayerButtonClicked() {
+        if (playerStateLiveData.value is PlayerState.Playing) {
+            audioPlayerControl?.pausePlayer()
+        }
+        else if (playerStateLiveData.value is PlayerState.Default){
+            return
+        }
+        else {
+            audioPlayerControl?.startPlayer()
+        }
+    }
+
+    fun hideNotification(){
+        audioPlayerControl?.hideNotification()
+    }
+
+    fun showNotification(){
+        if(playerStateLiveData.value is PlayerState.Playing){
+            audioPlayerControl?.showNotification()
+        }
+    }
+
+    fun removeAudioPlayerControl() {
+        audioPlayerControl = null
+    }
+
     fun fillData(){
         viewModelScope.launch {
             playlistInteractor
@@ -60,6 +95,7 @@ class AudioPlayerViewModel(
 
     override fun onCleared() {
         super.onCleared()
+        audioPlayerControl = null
     }
 
     fun addToFavorite(track: Track){

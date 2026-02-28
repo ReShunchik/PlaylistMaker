@@ -1,12 +1,21 @@
 package com.example.playlistmaker.ui.audioPlayer.fragment
 
+import android.Manifest
+import android.content.ComponentName
+import android.content.Context
+import android.content.Intent
+import android.content.ServiceConnection
+import android.os.Build
 import android.os.Bundle
+import android.os.IBinder
+import android.util.Log
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -17,13 +26,14 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentAudioPlayerBinding
 import com.example.playlistmaker.domain.search.models.Track
+import com.example.playlistmaker.services.MusicService
 import com.example.playlistmaker.ui.audioPlayer.adapters.BottomSheetAdapter
 import com.example.playlistmaker.ui.audioPlayer.viewModel.AudioPlayerViewModel
+import com.example.playlistmaker.ui.audioPlayer.viewModel.PlayerState
 import com.example.playlistmaker.ui.audioPlayer.viewModel.TrackState
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 import org.koin.core.component.KoinComponent
-import org.koin.core.parameter.parametersOf
 import java.time.OffsetDateTime
 
 class AudioPlayerFragment : Fragment(), KoinComponent {
@@ -32,6 +42,27 @@ class AudioPlayerFragment : Fragment(), KoinComponent {
     private val binding get() = _binding!!
 
     private lateinit var viewModel: AudioPlayerViewModel
+    private var songUrl: String = ""
+    private var contentText: String = ""
+
+    private val serviceConnection = object: ServiceConnection {
+        override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
+            val binder = service as MusicService.MusicServiceBinder
+            viewModel.setAudioPlayerControl(binder.getService())
+        }
+
+        override fun onServiceDisconnected(ame: ComponentName?) {
+            viewModel.removeAudioPlayerControl()
+        }
+    }
+
+    private val requestPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted: Boolean->
+        if (isGranted) {
+            bindMusicService()
+        }
+    }
 
     private lateinit var track: Track
 
@@ -116,8 +147,8 @@ class AudioPlayerFragment : Fragment(), KoinComponent {
             binding.playlists.layoutManager = LinearLayoutManager(requireContext())
         }
 
-        binding.playerButton.observeTrackTime().observe(viewLifecycleOwner){
-            binding.currentTime.text = it
+        viewModel.observePlayerStateLiveData().observe(viewLifecycleOwner){
+            renderTrackTime(it)
         }
 
         binding.addPlaylist.setOnClickListener{
@@ -125,12 +156,17 @@ class AudioPlayerFragment : Fragment(), KoinComponent {
                 R.id.action_audioPlayerFragment_to_createPlaylistFragment
             )
         }
+
+        binding.playerButton.setOnClickListener{
+            viewModel.onPlayerButtonClicked()
+        }
     }
 
 
     private fun setInfo(){
         track = requireArguments().get(TRACK) as Track
         if (track != null){
+            contentText = track.artistName + " - " + track.trackName
             val atworkUrl512 = track?.artworkUrl100?.replace("100x100", "512x512")
             Glide.with(this)
                 .load(atworkUrl512)
@@ -154,9 +190,15 @@ class AudioPlayerFragment : Fragment(), KoinComponent {
             }
             viewModel = getViewModel()
             viewModel.checkIsFavoriteTrack(track.trackId)
-            binding.playerButton.setConfiguration(getKoin().get(), track?.previewUrl)
+            songUrl = track.previewUrl
         } else {
             findNavController().navigateUp()
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+        } else {
+            bindMusicService()
         }
     }
 
@@ -167,13 +209,53 @@ class AudioPlayerFragment : Fragment(), KoinComponent {
             this.resources.displayMetrics).toInt()
     }
 
+    private fun renderTrackTime(state: PlayerState){
+        binding.currentTime.text = state.progress
+        if(state is PlayerState.Default){
+            binding.playerButton.enableButton(false)
+        }
+        else if (state is PlayerState.Prepared){
+            binding.playerButton.isTrackPlaying(false)
+            binding.playerButton.enableButton(true)
+        }
+        else {
+            binding.playerButton.enableButton(true)
+        }
+    }
+
+    private fun bindMusicService(){
+        val intent = Intent(requireContext(), MusicService::class.java).apply{
+            putExtra(SONG_URL, songUrl)
+            putExtra(CONTENT_TEXT, contentText)
+        }
+
+        requireContext().bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE)
+    }
+
+    private fun unBindMusicService(){
+        requireContext().unbindService(serviceConnection)
+    }
+
+    override fun onStart(){
+        super.onStart()
+        viewModel.hideNotification()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        viewModel.showNotification()
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
+        unBindMusicService()
         _binding = null
     }
 
     companion object{
         private const val TRACK = "track"
+        private const val SONG_URL = "song_url"
+        private const val CONTENT_TEXT = "content_text"
 
         fun createArgs(track: Track): Bundle =
             bundleOf(TRACK to track)

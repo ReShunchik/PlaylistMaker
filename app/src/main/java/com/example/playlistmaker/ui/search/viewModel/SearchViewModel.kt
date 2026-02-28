@@ -1,7 +1,5 @@
 package com.example.playlistmaker.ui.search.viewModel
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.domain.search.models.Track
@@ -9,26 +7,29 @@ import com.example.playlistmaker.domain.search.api.SearchHistoryInteractor
 import com.example.playlistmaker.domain.search.api.SearchInteractor
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class SearchViewModel(
     private val searchHistoryInteractor: SearchHistoryInteractor,
     private val searchInteractor: SearchInteractor,
 ): ViewModel() {
-
-
-
     private var latestSearchText = SEARCH_DEF
 
     private var searchJob: Job? = null
 
-    private val trackStateLiveData = MutableLiveData<TracksState>()
-    fun observeTrackState(): LiveData<TracksState> = trackStateLiveData
+    private val _trackState = MutableStateFlow<TracksState>(TracksState.Default)
+    val trackState: StateFlow<TracksState> = _trackState.asStateFlow()
+
+    private val _trackHistory = MutableStateFlow<ArrayList<Track>>(getHistory())
+    val trackHistory: StateFlow<ArrayList<Track>> = _trackHistory.asStateFlow()
 
     fun searchRequest() {
         val searchText = latestSearchText
         if(searchText.isNotEmpty()){
-            trackStateLiveData.postValue(TracksState.Loading)
+            _trackState.value = TracksState.Loading
 
             viewModelScope.launch {
                 searchInteractor
@@ -42,7 +43,7 @@ class SearchViewModel(
 
     private fun proccesResult(tracks: List<Track>?, message: String?){
         if (message != null){
-            trackStateLiveData.postValue(TracksState.Error(message))
+            _trackState.value = TracksState.Error(message)
         } else {
             if (tracks.isNullOrEmpty()){
                 val history: ArrayList<Track>?
@@ -51,11 +52,10 @@ class SearchViewModel(
                 } else {
                     history = null
                 }
-                trackStateLiveData.postValue(TracksState.Empty(
-                    message ?: "",
-                    history))
+                _trackState.value = TracksState.Empty(
+                    message ?: "")
             } else {
-                trackStateLiveData.postValue(TracksState.Content(tracks as ArrayList<Track>))
+                _trackState.value = TracksState.Content(tracks as ArrayList<Track>)
             }
         }
     }
@@ -66,10 +66,12 @@ class SearchViewModel(
 
     fun clearHistory(){
         searchHistoryInteractor.clearHistory()
+        _trackState.value = TracksState.Default
     }
 
     fun freshHistory(track: Track){
         searchHistoryInteractor.freshHistory(track)
+        _trackHistory.value = getHistory()
     }
 
     fun searchDebounce(changedText: String){
@@ -84,6 +86,15 @@ class SearchViewModel(
             delay(SEARCH_DEBOUNCE_DELAY)
             searchRequest()
         }
+    }
+
+    fun clearSearch(){
+        _trackState.value = TracksState.History
+        _trackHistory.value = getHistory()
+    }
+
+    fun setDefault(){
+        _trackState.value = TracksState.Default
     }
 
     companion object {

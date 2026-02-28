@@ -22,6 +22,7 @@ class SharingRepositoryImpl(
     override fun openTerms() {
         val agreement = Uri.parse(context.getString(R.string.agreement_link))
         val agreementIntent = Intent(Intent.ACTION_VIEW, agreement)
+        agreementIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         context.startActivity(agreementIntent)
     }
 
@@ -31,6 +32,7 @@ class SharingRepositoryImpl(
             putExtra(Intent.EXTRA_EMAIL, arrayOf("v.gorshenin_2004@mail.ru"))
             putExtra(Intent.EXTRA_SUBJECT, context.getString(R.string.email_subject))
             putExtra(Intent.EXTRA_TEXT, context.getString(R.string.email_message))
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         }
         context.startActivity(supportIntent)
     }

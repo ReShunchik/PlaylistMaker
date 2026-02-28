@@ -1,0 +1,43 @@
+[33m42e36aa[m[33m ([m[1;36mHEAD -> [m[1;32mdev[m[33m)[m создан customView для проигрывания трека. Добавлено во фрагмент AudioPlayerFragment
+[33m98ad48d[m[33m ([m[1;31morigin/dev[m[33m)[m редактирование плейлиста работает
+[33m56ac2c1[m исправлены ошибки
+[33m03dd74e[m спринт 22
+[33m4424c43[m изменён цвет затемнения
+[33m948a4c2[m исправлены недочёты2
+[33m3b8661c[m исправлены недочёты
+[33m3ac87f2[m треки сортируются в порядке убывания добавления в список
+[33md1ebd63[m треки сортируются в порядке убывания добавления в список
+[33m71c460a[m добавлена иконка, когда трек не добавлен в избранное
+[33m5a90e62[m довавлена возможность сохранять треки в избранное
+[33m560eb7a[m 1. Убрал hardcoding с таймером песни 2. Убрал переключение на Dispatcher.IO при поисковом запросе 3. Добавил отмену корутины в методе startTimer() MediaPlayerViewModel
+[33me6c5142[m проект переведён на использование корутин
+[33m7c5413b[m 1. исправлен краш с запросом cast 2. исправлен краш с изменением темы 3. исправлен краш с повтором трека 4. во фрагментах _binding обнуляется 5. убран закоментированный код
+[33mbf5797e[m проект переведён на паттерн singleActivity
+[33m11352c4[m макет доделан
+[33m2a07d42[m добавлен экран медиатеки(сделаны только заглушки) нет возможности создавать плейлисты и добавлять музыку в избранные
+[33m6355658[m никакая сущность не создаётся внутри класса изменено создание инетеракторов с сингл на фактори
+[33mbc183b8[m добавлен коин
+[33m9a8928a[m исправлены замечания
+[33mc084533[m задание 16 спринта
+[33m9cae5b5[m на момент задания 15 спринта
+[33me0b0800[m[33m ([m[1;31morigin/temp-branch[m[33m, [m[1;32mtemp-branch[m[33m)[m добавлены viewModel и всё приведено в соответсвии с чистой архитектурой
+[33m69ec5eb[m видна заглушка если треки не нашлись в creator'е появилось поле для хранение context изменил visibility на isVisible
+[33mae79a75[m всё приведено в соответствии с чистой архитектурой
+[33m39513fc[m 1. private val dateFormat by lazy { SimpleDateFormat("mm:ss", Locale.getDefault()) }
+[33mc9afdf7[m 1. поиск проходит автоматически с вводом пользователя 2. добавлена возможность слушать треки(30 секунд бесплатного проигрывания)
+[33md195c07[m add player activity new icon name delete Utils class add scroll for player activity
+[33m81a1961[m add player activity
+[33ma9babed[m add search history theme saved themeSwitcher color for light/night theme text in track have limited number of characters
+[33mc7c6020[m add search history
+[33m17d84bc[m added vector assets
+[33mb84a60d[m added communication with the database via itunes
+[33m0bd89d1[m add fun dpToPx for RoundedCorners fun bind of TrackViewHolder now have only one argument(track: Track)
+[33m983d819[m homework 10 sprint 1. add test tracks for search_activity 2. add new attr for themes 3. add adapters for tracks
+[33m1c2eeac[m homework 9 sprint part 3-4 main activity title always have white text color
+[33m8969841[m homework 9 sprint part 3-4 add fontFamily for button on main screen and titles for every activity
+[33me3ca242[m homework 9 sprint part 3-4 search activity have search field and save instance
+[33m13e6d09[m homework 9 sprint part 3-4 search activity have search field and save instance
+[33m3fb83ae[m homework 9 sprint part 1-2 markup code is placed in the styly added the ability to press buttons shareApp, messageSupport, watchAgreement add new string values for this button
+[33mc8e23a9[m homework 1 attempt
+[33mb3c9ced[m homework 1 attempt
+[33mc80a47a[m fisrt edition
