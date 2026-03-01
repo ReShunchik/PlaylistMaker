@@ -6,6 +6,7 @@ import com.example.playlistmaker.data.mapper.TrackDbConverter
 import com.example.playlistmaker.data.mapper.TrackPlaylistDbConverter
 import com.example.playlistmaker.data.playlist.repository.ImageRepositoryImpl
 import com.example.playlistmaker.data.playlist.repository.PlaylistRepositoryImpl
+import com.example.playlistmaker.data.playlist.repository.TrackPlaylistRepositoryImpl
 import com.example.playlistmaker.data.search.repository.SearchHistoryRepositoryImpl
 import com.example.playlistmaker.data.search.repository.SearchRepositoryImpl
 import com.example.playlistmaker.data.settings.repository.SettingsRepositoryImpl
@@ -13,6 +14,7 @@ import com.example.playlistmaker.data.sharing.SharingRepositoryImpl
 import com.example.playlistmaker.domain.favorite.api.FavoriteRepository
 import com.example.playlistmaker.domain.playlist.api.ImageRepository
 import com.example.playlistmaker.domain.playlist.api.PlaylistRepository
+import com.example.playlistmaker.domain.playlist.api.TrackPlaylistRepository
 import com.example.playlistmaker.domain.search.api.SearchHistoryRepository
 import com.example.playlistmaker.domain.search.api.SearchRepository
 import com.example.playlistmaker.domain.settings.api.SettingsRepository
@@ -39,7 +41,7 @@ val repositoryModule = module {
     }
 
     factory<SharingRepository> {
-        SharingRepositoryImpl(androidContext())
+        SharingRepositoryImpl(get())
     }
 
     factory {
@@ -55,7 +57,7 @@ val repositoryModule = module {
     }
 
     factory<PlaylistRepository> {
-        PlaylistRepositoryImpl(get(), get(), get(), get())
+        PlaylistRepositoryImpl(get(), get(), get())
     }
 
     factory {
@@ -64,6 +66,10 @@ val repositoryModule = module {
 
     factory<ImageRepository> {
         ImageRepositoryImpl(get())
+    }
+
+    factory<TrackPlaylistRepository> {
+        TrackPlaylistRepositoryImpl(get(), get())
     }
 
 }

@@ -6,6 +6,10 @@ sealed interface TracksState {
 
     object Loading : TracksState
 
+    object Default : TracksState
+
+    object History: TracksState
+
     data class Content(
         val tracks: ArrayList<Track>
     ) : TracksState
@@ -16,6 +20,5 @@ sealed interface TracksState {
 
     data class Empty(
         val message: String,
-        val history: ArrayList<Track>?
     ) : TracksState
 }

@@ -11,11 +11,11 @@ import com.example.playlistmaker.databinding.TrackViewBinding
 import com.example.playlistmaker.domain.search.models.Track
 
 
-class TrackAdapter(
+open class TrackAdapter(
     private val onItemClick: (track: Track) -> Unit
 ): RecyclerView.Adapter<TrackAdapter.TrackViewHolder>() {
 
-    private val tracks = ArrayList<Track>()
+    protected val tracks = ArrayList<Track>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TrackViewHolder =
         TrackViewHolder.from(parent)

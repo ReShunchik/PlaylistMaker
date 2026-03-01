@@ -11,6 +11,7 @@
         <item name="controlerPrimaryColor">@color/blue</item>
         <item name="controlerSecondaryColor">@color/blue_light</item>
         <item name="colorPlayerButton">@color/grey</item>
-        <item name="colorDarkned">@color/black_ligth</item>
+        <item name="colorPlaylistName">@color/black</item>
+        <item name="colorMenuText">@color/white</item>
     </style>
 </resources>

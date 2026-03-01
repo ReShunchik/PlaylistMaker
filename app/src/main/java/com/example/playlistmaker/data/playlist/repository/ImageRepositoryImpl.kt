@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Environment
+import android.util.Log
 import com.example.playlistmaker.domain.playlist.api.ImageRepository
 import java.io.File
 import java.io.FileOutputStream
@@ -14,6 +15,7 @@ class ImageRepositoryImpl(
 ): ImageRepository {
 
     override suspend fun saveImage(name: String, uri: Uri) {
+        Log.d("Image", "Image start saving")
         val filePath = File(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES), CATALOG)
         if (!filePath.exists()){
             filePath.mkdirs()
@@ -25,7 +27,9 @@ class ImageRepositoryImpl(
         BitmapFactory
             .decodeStream(inputStream)
             .compress(Bitmap.CompressFormat.JPEG, 30, outputStream)
+        Log.d("Image", "Image saved")
     }
+
 
     override fun getImage(name: String): File? {
         val filePath = File(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES), CATALOG)

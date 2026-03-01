@@ -108,15 +108,13 @@
                 app:layout_constraintTop_toBottomOf="@id/track_artist"
                 app:layout_constraintStart_toStartOf="@id/left_main_guideline"/>
 
-            <ImageButton
+            <com.example.playlistmaker.ui.views.PlaybackButtonView
                 android:id="@+id/player_button"
-                style="@style/round_button"
-                android:layout_width="@dimen/dimen_84dp"
-                android:layout_height="@dimen/dimen_84dp"
-                android:src="@drawable/ic_play_84"
-                android:backgroundTint="?attr/bgColor"
+                android:layout_width="@dimen/dimen_100dp"
+                android:layout_height="@dimen/dimen_100dp"
                 android:layout_marginTop="@dimen/dimen_28dp"
-                android:enabled="false"
+                app:playIcon="@drawable/ic_play_84"
+                app:pauseIcon="@drawable/ic_pause_84"
                 app:layout_constraintTop_toBottomOf="@id/track_artist"
                 app:layout_constraintStart_toEndOf="@id/add_button"
                 app:layout_constraintEnd_toStartOf="@id/favorite_button"/>

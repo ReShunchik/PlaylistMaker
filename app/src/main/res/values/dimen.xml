@@ -28,9 +28,12 @@
     <dimen name="dimen_140dp">140dp</dimen>
     <dimen name="dimen_160dp">160dp</dimen>
     <dimen name="dimen_168dp">168dp</dimen>
+    <dimen name="dimen_260dp">260dp</dimen>
     <dimen name="dimen_312dp">312dp</dimen>
     <dimen name="dimen_328dp">328dp</dimen>
     <dimen name="dimen_344dp">344dp</dimen>
+    <dimen name="dimen_360dp">360dp</dimen>
+
     <dimen name="text_bottom_panel_margin">4dp</dimen>
 
     <dimen name="button_width">328dp</dimen>

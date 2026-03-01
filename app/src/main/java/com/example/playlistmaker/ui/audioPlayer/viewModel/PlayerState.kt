@@ -1,12 +1,12 @@
 package com.example.playlistmaker.ui.audioPlayer.viewModel
 
-sealed class PlayerState(val isPlayButtonEnabled: Boolean, val isPlaying: Boolean, val progress: String) {
+sealed class PlayerState(val buttonState: Boolean, val progress: String) {
 
-    class Default(progress: String) : PlayerState(false, false, progress)
+    class Default() : PlayerState(false,"00:00")
 
-    class Prepared(progress: String) : PlayerState(true, false, progress)
+    class Prepared() : PlayerState(true, "00:00")
 
-    class Playing(progress: String) : PlayerState(true, true, progress)
+    class Playing(progress: String) : PlayerState(true, progress)
 
-    class Paused(progress: String) : PlayerState(true, false, progress)
+    class Paused(progress: String) : PlayerState(true, progress)
 }

@@ -3,8 +3,10 @@ package com.example.playlistmaker.di
 import android.media.MediaPlayer
 import com.example.playlistmaker.ui.audioPlayer.viewModel.AudioPlayerViewModel
 import com.example.playlistmaker.ui.createPlaylist.viewModel.CreatePlaylistViewModel
+import com.example.playlistmaker.ui.editPlaylist.viewModel.EditPlaylistViewModel
 import com.example.playlistmaker.ui.mediaLibrary.viewModel.FavoriteViewModel
 import com.example.playlistmaker.ui.mediaLibrary.viewModel.PlaylistViewModel
+import com.example.playlistmaker.ui.playList.viewModel.TrackPlaylistViewModel
 import com.example.playlistmaker.ui.search.viewModel.SearchViewModel
 import com.example.playlistmaker.ui.settings.viewModel.SettingsViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -35,8 +37,7 @@ val viewModelModule = module {
     }
 
     viewModel<AudioPlayerViewModel> {
-        (url: String) ->
-            AudioPlayerViewModel(get(), url, get(), get(), get(), get())
+        AudioPlayerViewModel(get(), get(), get())
     }
 
     viewModel<FavoriteViewModel> {
@@ -49,5 +50,13 @@ val viewModelModule = module {
 
     viewModel<PlaylistViewModel>{
         PlaylistViewModel(get())
+    }
+
+    viewModel<TrackPlaylistViewModel>{
+        TrackPlaylistViewModel(get(), get(), get(), get())
+    }
+
+    viewModel<EditPlaylistViewModel>{
+        EditPlaylistViewModel(get())
     }
 }
